@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.homework.PIM.calendar.controller.MainCalendarController">
+    <left>
+        <AnchorPane fx:id="leftPane" prefHeight="700.0" prefWidth="280.0">
+            <effect>
+                <DropShadow/>
+            </effect>
+            <children>
+                <ToggleButton fx:id="calendarButton" layoutX="89.0" layoutY="14.0" mnemonicParsing="false" text="日历"
+                              AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0"/>
+                <ToggleButton fx:id="contactButton" layoutX="89.0" layoutY="337.0" mnemonicParsing="false" text="联系人"
+                              AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0"/>
+                <ToggleButton fx:id="noteButton" layoutX="89.0" layoutY="373.0" mnemonicParsing="false" text="笔记"
+                              AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0"/>
+            </children>
+
+        </AnchorPane>
+    </left>
+    <top>
+        <AnchorPane prefHeight="170.0" prefWidth="200.0">
+            <children>
+                <Pane prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="newAppointment" contentDisplay="TOP" layoutX="10.0" layoutY="10.0"
+                                mnemonicParsing="false" onAction="#newAppointmentClick" prefHeight="120.0"
+                                prefWidth="85.0" text="新建约会">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/calendar.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="newNote" contentDisplay="TOP" layoutX="105.0" layoutY="10.0"
+                                mnemonicParsing="false" onAction="#newNoteClick" prefHeight="120.0" prefWidth="85.0"
+                                text="新建笔记">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/note.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="newTodo" alignment="CENTER" contentDisplay="TOP" layoutX="200.0" layoutY="10.0"
+                                mnemonicParsing="false" onAction="#newTodoClick" prefHeight="120.0" prefWidth="85.0"
+                                textOverrun="WORD_ELLIPSIS">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/todo.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <text>新建项目</text>
+                        </Button>
+                        <Separator layoutX="390.0" orientation="VERTICAL" prefHeight="160.0" prefWidth="6.0"/>
+                        <Separator fx:id="separatorY" layoutY="160.0" prefWidth="1440.0"/>
+                        <Button contentDisplay="TOP" layoutX="400.0" layoutY="10.0" mnemonicParsing="false"
+                                prefHeight="120.0" prefWidth="85.0" text="今天">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/today.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button contentDisplay="TOP" layoutX="495.0" layoutY="10.0" mnemonicParsing="false"
+                                prefHeight="120.0" prefWidth="85.0" text="随后7天">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/backseven.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Separator layoutX="590.0" orientation="VERTICAL" prefHeight="160.0" prefWidth="6.0"/>
+                    </children>
+                </Pane>
+                <Button fx:id="newContact" alignment="CENTER" contentDisplay="TOP" layoutX="295.0" layoutY="10.0"
+                        mnemonicParsing="false" onAction="#newContactClick" prefHeight="120.0" prefWidth="85.0"
+                        text="新建联系人" textOverrun="WORD_ELLIPSIS">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/contact.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label alignment="CENTER" layoutX="445.0" layoutY="130.0" prefWidth="75.0" text="转到"
+                       textAlignment="CENTER" textOverrun="CLIP">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <Label alignment="CENTER" layoutX="164.0" layoutY="135.0" prefWidth="75.0" text="新建"
+                       textAlignment="CENTER" textOverrun="CLIP">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+    </top>
+    <bottom>
+        <AnchorPane prefHeight="30.0" prefWidth="1440.0" BorderPane.alignment="CENTER"/>
+    </bottom>
+
+</BorderPane>
