@@ -1,10 +1,8 @@
 package com.homework.PIM.calendar.controller;
 
-import com.homework.PIM.Collection;
 import com.homework.PIM.calendar.CalendarMainApp;
 import com.homework.PIM.calendar.warpper.WrapContact;
 import com.homework.PIM.entity.PIMContact;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,8 +33,6 @@ public class ContactViewController {
     private CalendarMainApp mainApp;
 
     private MainCalendarController mainCalendarController;
-
-    private ObservableList<WrapContact> contacts = FXCollections.observableArrayList();
 
     /**
      * 初始化控制器，将每个联系人的firstName和lastName绑定到TableView上
@@ -75,16 +71,25 @@ public class ContactViewController {
     public void editContactClick(ActionEvent event) throws Exception {
         MainCalendarController.AlertBox alertBox = mainCalendarController.new AlertBox();
         WrapContact selectedContact = contactTable.getSelectionModel().getSelectedItem();
+        ObservableList<WrapContact> contacts = mainApp.getContacts();
+        int index = contacts.indexOf(selectedContact);
         alertBox.display("编辑联系人", PIMContact.class, selectedContact.unWrap());
         boolean okClick = alertBox.isOkClicked();
         //如果点击提交，则将原来的属性移除，将新增的属性添加
         //如果点击关闭，则什么事情也不发生
-        if (okClick){
-            contacts.remove(selectedContact);
+        if (okClick) {
             selectedContact = new WrapContact((PIMContact) alertBox.entity);
-            contacts.add(selectedContact);
+            contacts.set(index, selectedContact);
+            contactTable.getSelectionModel().select(selectedContact);
             showContactDetails(selectedContact);
         }
+    }
+
+    public void deleteContactClick(ActionEvent event) {
+        int selectedIndex = contactTable.getSelectionModel().getSelectedIndex();
+        PIMContact contact = contactTable.getSelectionModel().getSelectedItem().unWrap();
+        contactTable.getItems().remove(selectedIndex);
+        mainApp.getEntities().remove(contact);
     }
 
     public CalendarMainApp getMainApp() {
@@ -94,13 +99,7 @@ public class ContactViewController {
     public void setMainApp(CalendarMainApp mainApp) {
         //加载MainAPP，将保存在Main类的Collection加载到该控制器上
         this.mainApp = mainApp;
-        Collection contactCollection = mainApp.getEntities().getContact();
-        for (Object pimContact : contactCollection) {
-            //将实体类转化为包装类，便于数据的改动与添加及时与控制器绑定
-            WrapContact contact = new WrapContact((PIMContact) pimContact);
-            contacts.add(contact);
-        }
-        contactTable.setItems(contacts);
+        contactTable.setItems(mainApp.getContacts());
     }
 
     public MainCalendarController getMainCalendarController() {
@@ -111,11 +110,4 @@ public class ContactViewController {
         this.mainCalendarController = mainCalendarController;
     }
 
-    public ObservableList<WrapContact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(ObservableList<WrapContact> contacts) {
-        this.contacts = contacts;
-    }
 }

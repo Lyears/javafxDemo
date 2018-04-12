@@ -1,5 +1,7 @@
 package com.homework.PIM.calendar.controller;
 
+import com.homework.PIM.Collection;
+import com.homework.PIM.PIMManager;
 import com.homework.PIM.calendar.CalendarMainApp;
 import com.homework.PIM.calendar.warpper.WrapContact;
 import com.homework.PIM.calendar.warpper.WrapNote;
@@ -22,6 +24,7 @@ import javafx.stage.Stage;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author fzm
@@ -41,6 +44,9 @@ public class MainCalendarController {
     public ToggleButton noteButton;
     public ToggleButton contactButton;
 
+    public DatePicker datePicker;
+    private DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
     public Accordion accordion;
 
     private ContactViewController contactViewController = null;
@@ -51,6 +57,9 @@ public class MainCalendarController {
     public void initialize() {
         //设置水平分割线的模糊效果
         separatorY.setEffect(new DropShadow(5, 6, 4, Color.BLACK));
+
+        datePicker.setShowWeekNumbers(true);
+        datePicker.setValue(LocalDate.now());
         setLeftPaneLinearGradient();
 
         setToggleButtonGroup();
@@ -106,6 +115,7 @@ public class MainCalendarController {
                     case "NoteView": {
                         noteViewController = loader.getController();
                         noteViewController.setMainApp(mainApp);
+                        noteViewController.setMainCalendarController(this);
                         break;
                     }
                     default: {
@@ -133,14 +143,20 @@ public class MainCalendarController {
     public void newNoteClick(ActionEvent event) throws Exception {
         AlertBox alertBox = new AlertBox();
         alertBox.display("新建笔记", PIMNote.class);
-        noteViewController.getNotes().add(new WrapNote((PIMNote) alertBox.entity));
+        boolean isOkClick = alertBox.okClicked;
+        if(isOkClick) {
+            mainApp.getNotes().add(new WrapNote((PIMNote) alertBox.entity));
+        }
     }
 
     public void newContactClick(ActionEvent event) throws Exception {
         AlertBox alertBox = new AlertBox();
         alertBox.display("新建联系人", PIMContact.class);
         //将新建立的联系人添加到联系人集合
-        contactViewController.getContacts().add(new WrapContact((PIMContact) alertBox.entity));
+        boolean isOkClick = alertBox.okClicked;
+        if(isOkClick) {
+            mainApp.getContacts().add(new WrapContact((PIMContact) alertBox.entity));
+        }
     }
 
 
@@ -162,6 +178,9 @@ public class MainCalendarController {
             return okClicked;
         }
 
+        /**
+         * 设置新建项目的弹出框，不需要传入待编辑对象
+         */
         void display(String title, Class clazz) throws Exception {
             display(title, clazz, null);
         }
@@ -170,9 +189,10 @@ public class MainCalendarController {
          * 设置编辑项目的弹出框
          * @param title 弹出框标题
          * @param clazz 设置的项目类型
+         * @param o 设置传入的待编辑对象
          */
         void display(String title, Class clazz, Object o) throws Exception {
-
+            Collection<PIMEntity> entities = mainApp.getEntities();
 
             Stage window = new Stage();
             window.setTitle(title);
@@ -188,36 +208,42 @@ public class MainCalendarController {
             closeButton.setOnAction(event -> window.close());
 
             boolean isNewOperation;
+            //判断是否为新建项目弹出框
             isNewOperation = o == null;
             //提交按钮产生事件
             submitButton.setOnAction(event -> {
                 try {
                     entity = (PIMEntity) clazz.newInstance();
                     int i = 0;
-                    //实例化每个传入的对象，并为声明的属性赋值
+                    //实例化传入的对象，并为声明的属性赋值
                     for (Field text : clazz.getDeclaredFields()) {
                         text.setAccessible(true);
                         if (text.getType().equals(String.class)) {
                             text.set(entity, stringProperties[i].getValue());
-                        } else {
-                            text.set(entity, LocalDate.parse(stringProperties[i].getValue()));
+                        } else if(text.getType().equals(LocalDate.class)){
+                            text.set(entity, LocalDate.parse(stringProperties[i].getValue(),mdy));
                         }
                         i++;
 
                     }
+
                     // TODO: 2018/4/10 重构
 
                     window.close();
+
                     okClicked = true;
+                    //若是新建项目，将产生的对象传入集合,否则将编辑后的对象替换
                     if (isNewOperation) {
-                        mainApp.getEntities().add(entity);
+                        entities.add(entity);
+                    }else {
+                        entities.set(entities.indexOf(o),entity);
                     }
-
-
+                    System.out.println(entities);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
+
 
             VBox vBox = new VBox(15);
 
@@ -235,6 +261,7 @@ public class MainCalendarController {
             for (Field text : clazz.getDeclaredFields()) {
                 Label label = new Label(text.getName() + ": ");
                 textFields[i] = new TextField();
+                //如果传入的对象不为空，将文本框内的值预设为传入的对象对应的值
                 if(o!=null) {
                     realText = realClazz.getDeclaredFields()[i];
                     realText.setAccessible(true);

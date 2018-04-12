@@ -17,6 +17,13 @@ public class WrapNote {
         this.note = new SimpleStringProperty(note.getNote());
     }
 
+    public PIMNote unWrap(){
+        PIMNote note = new PIMNote();
+        note.setPriority(getPriority());
+        note.setNote(getNote());
+        return note;
+    }
+
     public String getPriority() {
         return priority.get();
     }

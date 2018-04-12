@@ -4,6 +4,8 @@ import com.homework.PIM.entity.PIMContact;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.Objects;
+
 /**
  * @author fzm
  * @date 2018/4/10
@@ -28,6 +30,25 @@ public class WrapContact {
         contact.setLastName(this.getLastName());
         contact.setEmail(this.getEmail());
         return contact;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(priority,firstName,lastName,email);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }if (!(o instanceof WrapContact)) {
+            return false;
+        }
+        WrapContact contact = (WrapContact) o;
+        return Objects.equals(contact.priority,priority)
+                && Objects.equals(contact.firstName,firstName)
+                && Objects.equals(contact.lastName,lastName)
+                && Objects.equals(contact.email,email);
     }
 
     public String getPriority() {

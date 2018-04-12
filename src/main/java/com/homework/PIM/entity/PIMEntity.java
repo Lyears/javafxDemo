@@ -1,6 +1,7 @@
 package com.homework.PIM.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author fzm
@@ -31,5 +32,19 @@ public abstract class PIMEntity implements Serializable {
     @Override
     abstract public String toString();
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }if (!(o instanceof PIMEntity)) {
+            return false;
+        }
+        PIMEntity entity = (PIMEntity) o;
+        return Objects.equals(entity.priority,priority);
+    }
 
+    @Override
+    public int hashCode() {
+        return  Objects.hash(priority);
+    }
 }

@@ -57,6 +57,12 @@
                         </Label>
                     </children>
                 </GridPane>
+                <HBox alignment="CENTER" layoutX="501.0" layoutY="548.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="30.0">
+                    <children>
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="60.0" text="编辑" onAction="#editNoteClick" />
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="60.0" text="删除" onAction="#deleteNoteClick" />
+                    </children>
+                </HBox>
             </children>
         </AnchorPane>
     </items>
