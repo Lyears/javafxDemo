@@ -3,6 +3,7 @@ package com.homework.PIM.calendar;
 import com.homework.PIM.Collection;
 import com.homework.PIM.PIMCollection;
 import com.homework.PIM.PIMManager;
+import com.homework.PIM.calendar.controller.CalendarViewController;
 import com.homework.PIM.calendar.controller.MainCalendarController;
 import com.homework.PIM.calendar.warpper.WrapContact;
 import com.homework.PIM.calendar.warpper.WrapNote;
@@ -14,10 +15,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 /**
  * @author fzm
@@ -30,12 +30,13 @@ public class CalendarMainApp extends Application {
     private Stage primaryStage;
     private ObservableList<WrapContact> contacts = FXCollections.observableArrayList();
     private ObservableList<WrapNote> notes = FXCollections.observableArrayList();
+
     /**
      * 新建一个集体参数
      */
     private Collection<PIMEntity> entities = new PIMCollection<>();
 
-    public CalendarMainApp() throws Exception{
+    public CalendarMainApp() throws Exception {
         //在初始化Calendar页面时加载持久化对象
         entities.addAll(PIMManager.load());
 
@@ -51,6 +52,8 @@ public class CalendarMainApp extends Application {
             WrapNote note = new WrapNote((PIMNote) pimNote);
             notes.add(note);
         }
+
+
     }
 
     public static void main(String[] args) {
@@ -77,14 +80,25 @@ public class CalendarMainApp extends Application {
 
     public void initCalendar() throws Exception {
 
-        // TODO: 2018/4/10 重构持久化加载方式 
+        // TODO: 2018/4/10 重构持久化加载方式
+        //加载主视图
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/MainCalendar.fxml"));
         this.calendarMainView = loader.load();
-        MainCalendarController controller = loader.getController();
-        controller.setMainApp(this);
-
+        MainCalendarController mainCalendarController = loader.getController();
+        mainCalendarController.setMainApp(this);
         rootLayout.setCenter(calendarMainView);
         primaryStage.setTitle("日历-个人管理系统");
+
+        //加载日历视图
+        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("view/CalendarView.fxml"));
+        AnchorPane pane = centerLoader.load();
+        CalendarViewController calendarViewController = centerLoader.getController();
+        calendarViewController.setMainApp(this);
+        calendarViewController.setMainCalendarController(mainCalendarController);
+        calendarMainView.setCenter(pane);
+
+        calendarViewController.globalDateLabel.textProperty().bind(mainCalendarController.stringBindingProperty());
+
     }
 
     public BorderPane getCalendarMainView() {

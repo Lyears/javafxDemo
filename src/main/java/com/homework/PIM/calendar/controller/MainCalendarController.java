@@ -1,11 +1,12 @@
 package com.homework.PIM.calendar.controller;
 
 import com.homework.PIM.Collection;
-import com.homework.PIM.PIMManager;
 import com.homework.PIM.calendar.CalendarMainApp;
 import com.homework.PIM.calendar.warpper.WrapContact;
 import com.homework.PIM.calendar.warpper.WrapNote;
 import com.homework.PIM.entity.*;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -45,24 +46,37 @@ public class MainCalendarController {
     public ToggleButton contactButton;
 
     public DatePicker datePicker;
-    private DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-
     public Accordion accordion;
-
+    private DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private StringBinding stringBinding = null;
     private ContactViewController contactViewController = null;
     private NoteViewController noteViewController = null;
+    private CalendarViewController calendarViewController = null;
     private CalendarMainApp mainApp;
 //    private Collection<PIMEntity> entities = mainApp.getEntities();
 
     public void initialize() {
         //设置水平分割线的模糊效果
         separatorY.setEffect(new DropShadow(5, 6, 4, Color.BLACK));
-
+        //设置时间选择器显示星期和将初始值设为当前时间
         datePicker.setShowWeekNumbers(true);
         datePicker.setValue(LocalDate.now());
+        ObjectProperty<LocalDate> localDateProperty = datePicker.valueProperty();
+        //设置日历显示时间标签的输出格式
+        stringBinding = new StringBinding() {
+            {
+                super.bind(localDateProperty);
+            }
+
+            @Override
+            protected String computeValue() {
+                return localDateProperty.get().getYear() + "年" + localDateProperty.get().getMonthValue() + "月";
+            }
+        };
         setLeftPaneLinearGradient();
 
         setToggleButtonGroup();
+
     }
 
     /**
@@ -87,6 +101,7 @@ public class MainCalendarController {
         ToggleGroup group = new ToggleGroup();
         calendarButton.setToggleGroup(group);
         calendarButton.setUserData("CalendarView");
+        calendarButton.setSelected(true);
 
         noteButton.setToggleGroup(group);
         noteButton.setUserData("NoteView");
@@ -95,7 +110,11 @@ public class MainCalendarController {
         contactButton.setUserData("ContactView");
 
         group.selectedToggleProperty().addListener(
-                (observable, oldValue, newValue) -> setCenterPane((String) group.getSelectedToggle().getUserData())
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        setCenterPane((String) group.getSelectedToggle().getUserData());
+                    }
+                }
         );
     }
 
@@ -104,7 +123,8 @@ public class MainCalendarController {
             if (fileName != null) {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(CalendarMainApp.class.getResource("view/" + fileName + ".fxml"));
-                SplitPane pane = loader.load();
+                Region pane = loader.load();
+
                 switch (fileName) {
                     case "ContactView": {
                         contactViewController = loader.getController();
@@ -116,6 +136,14 @@ public class MainCalendarController {
                         noteViewController = loader.getController();
                         noteViewController.setMainApp(mainApp);
                         noteViewController.setMainCalendarController(this);
+                        break;
+                    }
+                    case "CalendarView": {
+                        calendarViewController = loader.getController();
+                        calendarViewController.setMainApp(mainApp);
+                        calendarViewController.setMainCalendarController(this);
+                        //将时间选择器上的日期与日历页面上的标签绑定
+                        calendarViewController.globalDateLabel.textProperty().bind(stringBinding);
                         break;
                     }
                     default: {
@@ -144,7 +172,7 @@ public class MainCalendarController {
         AlertBox alertBox = new AlertBox();
         alertBox.display("新建笔记", PIMNote.class);
         boolean isOkClick = alertBox.okClicked;
-        if(isOkClick) {
+        if (isOkClick) {
             mainApp.getNotes().add(new WrapNote((PIMNote) alertBox.entity));
         }
     }
@@ -154,7 +182,7 @@ public class MainCalendarController {
         alertBox.display("新建联系人", PIMContact.class);
         //将新建立的联系人添加到联系人集合
         boolean isOkClick = alertBox.okClicked;
-        if(isOkClick) {
+        if (isOkClick) {
             mainApp.getContacts().add(new WrapContact((PIMContact) alertBox.entity));
         }
     }
@@ -166,6 +194,14 @@ public class MainCalendarController {
 
     public void setMainApp(CalendarMainApp mainApp) {
         this.mainApp = mainApp;
+    }
+
+    public String getStringBinding() {
+        return stringBinding.get();
+    }
+
+    public StringBinding stringBindingProperty() {
+        return stringBinding;
     }
 
     public class AlertBox {
@@ -187,9 +223,10 @@ public class MainCalendarController {
 
         /**
          * 设置编辑项目的弹出框
+         *
          * @param title 弹出框标题
          * @param clazz 设置的项目类型
-         * @param o 设置传入的待编辑对象
+         * @param o     设置传入的待编辑对象
          */
         void display(String title, Class clazz, Object o) throws Exception {
             Collection<PIMEntity> entities = mainApp.getEntities();
@@ -220,8 +257,8 @@ public class MainCalendarController {
                         text.setAccessible(true);
                         if (text.getType().equals(String.class)) {
                             text.set(entity, stringProperties[i].getValue());
-                        } else if(text.getType().equals(LocalDate.class)){
-                            text.set(entity, LocalDate.parse(stringProperties[i].getValue(),mdy));
+                        } else if (text.getType().equals(LocalDate.class)) {
+                            text.set(entity, LocalDate.parse(stringProperties[i].getValue(), mdy));
                         }
                         i++;
 
@@ -235,8 +272,8 @@ public class MainCalendarController {
                     //若是新建项目，将产生的对象传入集合,否则将编辑后的对象替换
                     if (isNewOperation) {
                         entities.add(entity);
-                    }else {
-                        entities.set(entities.indexOf(o),entity);
+                    } else {
+                        entities.set(entities.indexOf(o), entity);
                     }
                     System.out.println(entities);
                 } catch (Exception e) {
@@ -262,7 +299,7 @@ public class MainCalendarController {
                 Label label = new Label(text.getName() + ": ");
                 textFields[i] = new TextField();
                 //如果传入的对象不为空，将文本框内的值预设为传入的对象对应的值
-                if(o!=null) {
+                if (o != null) {
                     realText = realClazz.getDeclaredFields()[i];
                     realText.setAccessible(true);
                     textFields[i].setText((String) realText.get(o));

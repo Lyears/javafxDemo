@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.homework.PIM.calendar.controller.MainCalendarController">
+<BorderPane layoutY="30.0" prefHeight="870.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.homework.PIM.calendar.controller.MainCalendarController">
     <left>
-        <AnchorPane fx:id="leftPane" prefHeight="700.0" prefWidth="280.0">
+        <AnchorPane fx:id="leftPane" prefHeight="670.0" prefWidth="280.0">
             <effect>
                 <DropShadow />
             </effect>
@@ -19,7 +19,7 @@
                 <ToggleButton fx:id="calendarButton" layoutX="89.0" layoutY="14.0" mnemonicParsing="false" text="日历" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0" />
                 <ToggleButton fx:id="contactButton" layoutX="89.0" layoutY="337.0" mnemonicParsing="false" text="联系人" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0" />
                 <ToggleButton fx:id="noteButton" layoutX="89.0" layoutY="373.0" mnemonicParsing="false" text="笔记" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0" />
-            <DatePicker layoutX="43.0" layoutY="54.0" fx:id="datePicker"/>
+            <DatePicker fx:id="datePicker" layoutX="43.0" layoutY="54.0" />
             </children>
 
         </AnchorPane>
