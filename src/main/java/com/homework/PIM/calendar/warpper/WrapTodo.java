@@ -12,7 +12,7 @@ import java.time.LocalDate;
  * @author fzm
  * @date 2018/4/13
  **/
-public class WrapTodo {
+public class WrapTodo extends WrapEntity {
     private final StringProperty priority;
     private final ObjectProperty<LocalDate> date;
     private final StringProperty text;
@@ -32,14 +32,27 @@ public class WrapTodo {
         return todo;
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
     public String getPriority() {
         return priority.get();
     }
 
+    @Override
     public StringProperty priorityProperty() {
         return priority;
     }
 
+    @Override
     public void setPriority(String priority) {
         this.priority.set(priority);
     }

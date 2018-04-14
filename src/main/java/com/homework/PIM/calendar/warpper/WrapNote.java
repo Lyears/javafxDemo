@@ -8,7 +8,7 @@ import javafx.beans.property.StringProperty;
  * @author fzm
  * @date 2018/4/10
  **/
-public class WrapNote {
+public class WrapNote extends WrapEntity{
     private final StringProperty priority;
     private final StringProperty note;
 
@@ -24,14 +24,17 @@ public class WrapNote {
         return note;
     }
 
+    @Override
     public String getPriority() {
         return priority.get();
     }
 
+    @Override
     public StringProperty priorityProperty() {
         return priority;
     }
 
+    @Override
     public void setPriority(String priority) {
         this.priority.set(priority);
     }

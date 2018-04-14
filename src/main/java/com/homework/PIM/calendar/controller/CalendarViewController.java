@@ -2,16 +2,23 @@ package com.homework.PIM.calendar.controller;
 
 import com.homework.PIM.calendar.CalendarMainApp;
 import com.homework.PIM.calendar.warpper.WrapAppointment;
+import com.homework.PIM.calendar.warpper.WrapEntity;
 import com.homework.PIM.calendar.warpper.WrapTodo;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -34,11 +41,41 @@ public class CalendarViewController {
 
     private ObservableList<WrapTodo> thisMonthTodos;
     private ObservableList<WrapAppointment> thisMonthAppointment;
+
+    private ObjectProperty<WrapEntity> selectedItems = new SimpleObjectProperty<>();
+    private BooleanProperty todoSelected = new SimpleBooleanProperty(false);
+    private BooleanProperty appSelected = new SimpleBooleanProperty(false);
+    private ObservableMap<WrapEntity, BooleanProperty> entitySelectMap = FXCollections.observableHashMap();
+
     private CalendarMainApp mainApp;
     private MainCalendarController mainCalendarController;
 
     public void initialize() {
         flowPane.setVgap(0);
+    }
+
+    private void loadDateGrip() {
+
+        flowPane.getChildren().clear();
+        //得到时间选择器这个月的首日
+        LocalDate dayInMonth = labelDate.with(TemporalAdjusters.firstDayOfMonth());
+
+        int cellNumber = 35;
+        Color color;
+        for (int i = 0; i < cellNumber; i++) {
+            if (dayInMonth.getMonthValue() != labelDate.getMonthValue()) {
+                color = Color.GRAY;
+            } else if (dayInMonth.equals(LocalDate.now())) {
+                color = Color.BLUE;
+            } else if (dayInMonth.equals(labelDate)) {
+                color = Color.RED;
+            } else {
+                color = Color.BLACK;
+            }
+            //
+            initDateGrip(dayInMonth, color);
+            dayInMonth = dayInMonth.plusDays(1);
+        }
     }
 
     private void initDateGrip(LocalDate labelDate) {
@@ -80,6 +117,7 @@ public class CalendarViewController {
         label.setFont(Font.font(14));
         label.setTextFill(color);
         vBox.getChildren().add(label);
+
         //打印出当天的todo
         for (WrapTodo todo : thisMonthTodos) {
             if (todo.getDate().equals(labelDate)) {
@@ -87,13 +125,14 @@ public class CalendarViewController {
                 todoText.setWrapText(true);
                 //设置浅灰色背景
                 todoText.setBackground(new Background(new BackgroundFill(Color.valueOf("#E8E8E8"), null, null)));
-                todoText.setOnMousePressed(
-                        (event)->{
-                            if (event.getButton().equals(MouseButton.PRIMARY)){
-                                System.out.println(todo);
-                            }
-                        }
-                );
+
+                //
+                todoText.setOnMousePressed(new MouseSelectedEvent(todoText, todoSelected, todo));
+                entitySelectMap.put(todo, todoSelected);
+
+                if (entitySelectMap.get(todo).get()) {
+                    todoText.setEffect(new DropShadow());
+                }
                 vBox.getChildren().add(todoText);
             }
         }
@@ -104,6 +143,13 @@ public class CalendarViewController {
                 appointmentText.setWrapText(true);
                 //设置浅蓝色背景
                 appointmentText.setBackground(new Background(new BackgroundFill(Color.valueOf("0099FF"), null, null)));
+                //
+                appointmentText.setOnMousePressed(new MouseSelectedEvent(appointmentText, appSelected, appointment));
+                entitySelectMap.put(appointment, appSelected);
+
+                if (entitySelectMap.get(appointment).get()) {
+                    appointmentText.setEffect(new DropShadow());
+                }
                 vBox.getChildren().add(appointmentText);
             }
         }
@@ -115,7 +161,6 @@ public class CalendarViewController {
 
         flowPane.getChildren().add(pane);
     }
-
 
     public LocalDate getLocalDateProperty() {
         return localDateProperty.get();
@@ -135,8 +180,6 @@ public class CalendarViewController {
 
     public void setMainApp(CalendarMainApp mainApp) {
         this.mainApp = mainApp;
-
-
     }
 
     public MainCalendarController getMainCalendarController() {
@@ -169,24 +212,45 @@ public class CalendarViewController {
                 }
         );
 
-        //得到时间选择器这个月的首日
-        LocalDate dayInMonth = labelDate.with(TemporalAdjusters.firstDayOfMonth());
+        loadDateGrip();
+        selectedItems.addListener(
+                (observe, oldValue, newValue) -> {
+                    entitySelectMap.forEach(
+                            (k, v) -> {
+                                if (!k.equals(newValue)) {
+                                    v.set(false);
+                                }
+                            }
+                    );
+                    System.out.println("change");
+                    loadDateGrip();
+                }
+        );
 
-        int cellNumber = 35;
-        Color color;
-        for (int i = 0; i < cellNumber; i++) {
-            if (dayInMonth.getMonthValue() != labelDate.getMonthValue()) {
-                color = Color.GRAY;
-            } else if (dayInMonth.equals(LocalDate.now())) {
-                color = Color.BLUE;
-            } else if (dayInMonth.equals(labelDate)) {
-                color = Color.RED;
-            } else {
-                color = Color.BLACK;
+    }
+
+    private class MouseSelectedEvent implements EventHandler<MouseEvent> {
+        Label label;
+        BooleanProperty select;
+        WrapEntity wrapEntity;
+
+        MouseSelectedEvent(Label label, BooleanProperty select, WrapEntity wrapEntity) {
+            this.label = label;
+            this.select = select;
+            this.wrapEntity = wrapEntity;
+
+        }
+
+        @Override
+        public void handle(MouseEvent event) {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                if (!select.get()) {
+                    select.set(true);
+                    label.setEffect(new DropShadow());
+                }
+                selectedItems.set(wrapEntity);
+                System.out.println(selectedItems.toString());
             }
-            initDateGrip(dayInMonth, color);
-            dayInMonth = dayInMonth.plusDays(1);
-
         }
     }
 }

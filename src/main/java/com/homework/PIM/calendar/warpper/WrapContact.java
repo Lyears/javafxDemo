@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author fzm
  * @date 2018/4/10
  **/
-public class WrapContact {
+public class WrapContact extends WrapEntity{
     private final StringProperty priority;
     private final StringProperty firstName;
     private final StringProperty lastName;
@@ -51,14 +51,17 @@ public class WrapContact {
                 && Objects.equals(contact.email,email);
     }
 
+    @Override
     public String getPriority() {
         return priority.get();
     }
 
+    @Override
     public StringProperty priorityProperty() {
         return priority;
     }
 
+    @Override
     public void setPriority(String priority) {
         this.priority.set(priority);
     }

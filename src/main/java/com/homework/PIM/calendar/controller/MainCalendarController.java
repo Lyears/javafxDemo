@@ -42,6 +42,8 @@ public class MainCalendarController {
     public Button newContact;
     public Button todayButton;
     public Button lateButton;
+    public Button editButton;
+    public Button deleteButton;
 
     public Separator separatorY;
     public AnchorPane leftPane;
