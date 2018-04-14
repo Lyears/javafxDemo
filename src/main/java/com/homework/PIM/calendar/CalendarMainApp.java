@@ -3,19 +3,18 @@ package com.homework.PIM.calendar;
 import com.homework.PIM.Collection;
 import com.homework.PIM.PIMCollection;
 import com.homework.PIM.PIMManager;
-import com.homework.PIM.calendar.controller.CalendarViewController;
 import com.homework.PIM.calendar.controller.MainCalendarController;
+import com.homework.PIM.calendar.warpper.WrapAppointment;
 import com.homework.PIM.calendar.warpper.WrapContact;
 import com.homework.PIM.calendar.warpper.WrapNote;
-import com.homework.PIM.entity.PIMContact;
-import com.homework.PIM.entity.PIMEntity;
-import com.homework.PIM.entity.PIMNote;
+import com.homework.PIM.calendar.warpper.WrapTodo;
+import com.homework.PIM.entity.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -30,6 +29,8 @@ public class CalendarMainApp extends Application {
     private Stage primaryStage;
     private ObservableList<WrapContact> contacts = FXCollections.observableArrayList();
     private ObservableList<WrapNote> notes = FXCollections.observableArrayList();
+    private ObservableList<WrapTodo> todos = FXCollections.observableArrayList();
+    private ObservableList<WrapAppointment> appointments = FXCollections.observableArrayList();
 
     /**
      * 新建一个集体参数
@@ -52,7 +53,16 @@ public class CalendarMainApp extends Application {
             WrapNote note = new WrapNote((PIMNote) pimNote);
             notes.add(note);
         }
-
+        Collection todoCollection = entities.getTodos();
+        for (Object pimTodo : todoCollection){
+            WrapTodo todo = new WrapTodo((PIMTodo) pimTodo);
+            todos.add(todo);
+        }
+        Collection appointmentCollection = entities.getAppointments();
+        for (Object pimAppointment : appointmentCollection){
+            WrapAppointment appointment = new WrapAppointment((PIMAppointment) pimAppointment);
+            appointments.add(appointment);
+        }
 
     }
 
@@ -90,15 +100,13 @@ public class CalendarMainApp extends Application {
         primaryStage.setTitle("日历-个人管理系统");
 
         //加载日历视图
-        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("view/CalendarView.fxml"));
-        AnchorPane pane = centerLoader.load();
-        CalendarViewController calendarViewController = centerLoader.getController();
-        calendarViewController.setMainApp(this);
-        calendarViewController.setMainCalendarController(mainCalendarController);
-        calendarMainView.setCenter(pane);
+        mainCalendarController.setCenterPane("CalendarView", this);
+        todos.addListener((ListChangeListener<WrapTodo>) c -> mainCalendarController.setCenterPane("CalendarView", this));
+        appointments.addListener((ListChangeListener<WrapAppointment>) c -> mainCalendarController.setCenterPane("CalendarView", this));
 
-        calendarViewController.globalDateLabel.textProperty().bind(mainCalendarController.stringBindingProperty());
-
+        mainCalendarController.datePicker.valueProperty().addListener(
+                (observable, oldValue, newValue)-> mainCalendarController.setCenterPane("CalendarView", this)
+        );
     }
 
     public BorderPane getCalendarMainView() {
@@ -131,5 +139,21 @@ public class CalendarMainApp extends Application {
 
     public void setNotes(ObservableList<WrapNote> notes) {
         this.notes = notes;
+    }
+
+    public ObservableList<WrapTodo> getTodos() {
+        return todos;
+    }
+
+    public void setTodos(ObservableList<WrapTodo> todos) {
+        this.todos = todos;
+    }
+
+    public ObservableList<WrapAppointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(ObservableList<WrapAppointment> appointments) {
+        this.appointments = appointments;
     }
 }

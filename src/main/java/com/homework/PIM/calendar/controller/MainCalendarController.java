@@ -2,14 +2,17 @@ package com.homework.PIM.calendar.controller;
 
 import com.homework.PIM.Collection;
 import com.homework.PIM.calendar.CalendarMainApp;
+import com.homework.PIM.calendar.warpper.WrapAppointment;
 import com.homework.PIM.calendar.warpper.WrapContact;
 import com.homework.PIM.calendar.warpper.WrapNote;
+import com.homework.PIM.calendar.warpper.WrapTodo;
 import com.homework.PIM.entity.*;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,6 +40,8 @@ public class MainCalendarController {
     public Button newTodo;
     public Button newNote;
     public Button newContact;
+    public Button todayButton;
+    public Button lateButton;
 
     public Separator separatorY;
     public AnchorPane leftPane;
@@ -49,11 +54,13 @@ public class MainCalendarController {
     public Accordion accordion;
     private DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private StringBinding stringBinding = null;
-    private ContactViewController contactViewController = null;
-    private NoteViewController noteViewController = null;
-    private CalendarViewController calendarViewController = null;
+    @FXML
+    private ContactViewController contactViewController;
+    @FXML
+    private NoteViewController noteViewController;
+    @FXML
+    private CalendarViewController calendarViewController;
     private CalendarMainApp mainApp;
-//    private Collection<PIMEntity> entities = mainApp.getEntities();
 
     public void initialize() {
         //设置水平分割线的模糊效果
@@ -61,18 +68,19 @@ public class MainCalendarController {
         //设置时间选择器显示星期和将初始值设为当前时间
         datePicker.setShowWeekNumbers(true);
         datePicker.setValue(LocalDate.now());
-        ObjectProperty<LocalDate> localDateProperty = datePicker.valueProperty();
+        ObjectProperty<LocalDate> datePickerProperty = datePicker.valueProperty();
         //设置日历显示时间标签的输出格式
         stringBinding = new StringBinding() {
             {
-                super.bind(localDateProperty);
+                super.bind(datePickerProperty);
             }
 
             @Override
             protected String computeValue() {
-                return localDateProperty.get().getYear() + "年" + localDateProperty.get().getMonthValue() + "月";
+                return datePickerProperty.get().getYear() + "年" + datePickerProperty.get().getMonthValue() + "月";
             }
         };
+
         setLeftPaneLinearGradient();
 
         setToggleButtonGroup();
@@ -112,13 +120,13 @@ public class MainCalendarController {
         group.selectedToggleProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue != null) {
-                        setCenterPane((String) group.getSelectedToggle().getUserData());
+                        setCenterPane((String) group.getSelectedToggle().getUserData(), this.mainApp);
                     }
                 }
         );
     }
 
-    private void setCenterPane(String fileName) {
+    public void setCenterPane(String fileName, CalendarMainApp mainApp) {
         try {
             if (fileName != null) {
                 FXMLLoader loader = new FXMLLoader();
@@ -150,9 +158,9 @@ public class MainCalendarController {
                     }
                 }
 
-                this.mainApp.getCalendarMainView().setCenter(pane);
+                mainApp.getCalendarMainView().setCenter(pane);
             } else {
-                this.mainApp.getCalendarMainView().setCenter(null);
+                mainApp.getCalendarMainView().setCenter(null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,11 +169,21 @@ public class MainCalendarController {
 
 
     public void newTodoClick(ActionEvent event) throws Exception {
-        new AlertBox().display("新建项目", PIMTodo.class);
+        AlertBox alertBox = new AlertBox();
+        alertBox.display("新建项目", PIMTodo.class);
+        boolean isOKClick = alertBox.okClicked;
+        if (isOKClick){
+            mainApp.getTodos().add(new WrapTodo((PIMTodo) alertBox.entity));
+        }
     }
 
     public void newAppointmentClick(ActionEvent event) throws Exception {
-        new AlertBox().display("新建约会", PIMAppointment.class);
+        AlertBox alertBox = new AlertBox();
+        alertBox.display("新建约会", PIMAppointment.class);
+        boolean isOKClick = alertBox.okClicked;
+        if (isOKClick){
+            mainApp.getAppointments().add(new WrapAppointment((PIMAppointment) alertBox.entity));
+        }
     }
 
     public void newNoteClick(ActionEvent event) throws Exception {
@@ -186,6 +204,12 @@ public class MainCalendarController {
             mainApp.getContacts().add(new WrapContact((PIMContact) alertBox.entity));
         }
     }
+    public void todayButtonClick(ActionEvent event){
+        datePicker.valueProperty().set(LocalDate.now());
+    }
+    public void lateButtonClick(ActionEvent event){
+        datePicker.valueProperty().set(datePicker.getValue().plusDays(7));
+    }
 
 
     public CalendarMainApp getMainApp() {
@@ -194,6 +218,7 @@ public class MainCalendarController {
 
     public void setMainApp(CalendarMainApp mainApp) {
         this.mainApp = mainApp;
+
     }
 
     public String getStringBinding() {
@@ -240,7 +265,9 @@ public class MainCalendarController {
             window.setMaxWidth(450);
 
             Button closeButton = new Button("关闭");
+            closeButton.setCancelButton(true);
             Button submitButton = new Button("提交");
+            submitButton.setDefaultButton(true);
 
             closeButton.setOnAction(event -> window.close());
 
