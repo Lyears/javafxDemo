@@ -2,15 +2,13 @@ package com.homework.PIM.calendar.controller;
 
 import com.homework.PIM.Collection;
 import com.homework.PIM.calendar.CalendarMainApp;
-import com.homework.PIM.calendar.warpper.WrapAppointment;
-import com.homework.PIM.calendar.warpper.WrapContact;
-import com.homework.PIM.calendar.warpper.WrapNote;
-import com.homework.PIM.calendar.warpper.WrapTodo;
+import com.homework.PIM.calendar.warpper.*;
 import com.homework.PIM.entity.*;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -53,7 +51,6 @@ public class MainCalendarController {
     public ToggleButton contactButton;
 
     public DatePicker datePicker;
-    public Accordion accordion;
     private DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private StringBinding stringBinding = null;
     @FXML
@@ -137,18 +134,23 @@ public class MainCalendarController {
 
                 switch (fileName) {
                     case "ContactView": {
+                        //为了保证编辑与删除按钮的正确选择，需要在加载中间场景时将其他控制类置为null
+                        noteViewController = null;
                         contactViewController = loader.getController();
                         contactViewController.setMainApp(mainApp);
                         contactViewController.setMainCalendarController(this);
                         break;
                     }
                     case "NoteView": {
+                        contactViewController = null;
                         noteViewController = loader.getController();
                         noteViewController.setMainApp(mainApp);
                         noteViewController.setMainCalendarController(this);
                         break;
                     }
                     case "CalendarView": {
+                        noteViewController = null;
+                        contactViewController = null;
                         calendarViewController = loader.getController();
                         calendarViewController.setMainApp(mainApp);
                         calendarViewController.setMainCalendarController(this);
@@ -174,7 +176,7 @@ public class MainCalendarController {
         AlertBox alertBox = new AlertBox();
         alertBox.display("新建项目", PIMTodo.class);
         boolean isOKClick = alertBox.okClicked;
-        if (isOKClick){
+        if (isOKClick) {
             mainApp.getTodos().add(new WrapTodo((PIMTodo) alertBox.entity));
         }
     }
@@ -183,7 +185,7 @@ public class MainCalendarController {
         AlertBox alertBox = new AlertBox();
         alertBox.display("新建约会", PIMAppointment.class);
         boolean isOKClick = alertBox.okClicked;
-        if (isOKClick){
+        if (isOKClick) {
             mainApp.getAppointments().add(new WrapAppointment((PIMAppointment) alertBox.entity));
         }
     }
@@ -206,11 +208,154 @@ public class MainCalendarController {
             mainApp.getContacts().add(new WrapContact((PIMContact) alertBox.entity));
         }
     }
-    public void todayButtonClick(ActionEvent event){
+
+    public void todayButtonClick(ActionEvent event) {
         datePicker.valueProperty().set(LocalDate.now());
     }
-    public void lateButtonClick(ActionEvent event){
+
+    public void lateButtonClick(ActionEvent event) {
         datePicker.valueProperty().set(datePicker.getValue().plusDays(7));
+    }
+
+    /**
+     * 定义编辑按钮的方法
+     */
+    public void editButtonClick(ActionEvent event) {
+
+        WrapEntity selectedEntity = mainApp.getSelectedItem();
+        if (contactViewController != null) {
+            WrapContact selectedContact = contactViewController.contactTable.getSelectionModel().getSelectedItem();
+            edit(selectedContact, contactViewController);
+        } else if (noteViewController != null) {
+            WrapNote selectedNote = noteViewController.noteTable.getSelectionModel().getSelectedItem();
+            edit(selectedNote, noteViewController);
+        } else {
+            if (selectedEntity instanceof WrapTodo) {
+                WrapTodo wrapTodo = (WrapTodo) selectedEntity;
+                edit(wrapTodo, mainApp.getTodos());
+            } else if (selectedEntity instanceof WrapAppointment) {
+                WrapAppointment wrapAppointment = (WrapAppointment) selectedEntity;
+                edit(wrapAppointment, mainApp.getAppointments());
+            }
+        }
+    }
+
+    private void edit(WrapTodo wrapTodo, ObservableList<WrapTodo> todos) {
+        try {
+            AlertBox alertBox = new AlertBox();
+            int index = todos.indexOf(wrapTodo);
+            alertBox.display("编辑项目", PIMTodo.class, wrapTodo.unWrap());
+            boolean okClick = alertBox.isOkClicked();
+            if (okClick) {
+                wrapTodo = new WrapTodo((PIMTodo) alertBox.entity);
+                todos.set(index, wrapTodo);
+            }
+        } catch (Exception e) {
+            // TODO: 2018/4/14
+            e.printStackTrace();
+        }
+    }
+
+    private void edit(WrapAppointment wrapAppointment, ObservableList<WrapAppointment> appointments) {
+        try {
+            AlertBox alertBox = new AlertBox();
+            int index = appointments.indexOf(wrapAppointment);
+            alertBox.display("编辑项目", PIMAppointment.class, wrapAppointment.unWrap());
+            boolean okClick = alertBox.isOkClicked();
+            if (okClick) {
+                wrapAppointment = new WrapAppointment((PIMAppointment) alertBox.entity);
+                appointments.set(index, wrapAppointment);
+            }
+        } catch (Exception e) {
+            // TODO: 2018/4/14
+            e.printStackTrace();
+        }
+    }
+
+    private void edit(WrapContact selectedContact, ContactViewController contactViewController) {
+        try {
+            AlertBox alertBox = new AlertBox();
+            ObservableList<WrapContact> contacts = mainApp.getContacts();
+            int index = contacts.indexOf(selectedContact);
+            alertBox.display("编辑联系人", PIMContact.class, selectedContact.unWrap());
+            boolean okClick = alertBox.isOkClicked();
+            //如果点击提交，则将原来的属性移除，将新增的属性添加
+            //如果点击关闭，则什么事情也不发生
+            if (okClick) {
+                selectedContact = new WrapContact((PIMContact) alertBox.entity);
+                contacts.set(index, selectedContact);
+                contactViewController.contactTable.getSelectionModel().select(selectedContact);
+                contactViewController.showContactDetails(selectedContact);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void edit(WrapNote selectedNote, NoteViewController noteViewController) {
+        try {
+            AlertBox alertBox = new AlertBox();
+            ObservableList<WrapNote> notes = mainApp.getNotes();
+            int index = notes.indexOf(selectedNote);
+            alertBox.display("编辑笔记", PIMNote.class, selectedNote.unWrap());
+            boolean okClick = alertBox.isOkClicked();
+            //如果点击提交，则将原来的属性移除，将新增的属性添加
+            //如果点击关闭，则什么事情也不发生
+            if (okClick) {
+                selectedNote = new WrapNote((PIMNote) alertBox.entity);
+                notes.set(index, selectedNote);
+                noteViewController.noteTable.getSelectionModel().select(selectedNote);
+                noteViewController.showNoteDetails(selectedNote);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteButtonClick(ActionEvent event) {
+        WrapEntity selectedEntity = mainApp.getSelectedItem();
+        if (noteViewController != null) {
+            delete(noteViewController);
+        } else if (contactViewController != null) {
+            delete(contactViewController);
+        } else {
+            if (selectedEntity instanceof WrapTodo) {
+                WrapTodo selectedTodo = (WrapTodo) selectedEntity;
+                delete(selectedTodo, mainApp.getTodos());
+            } else if (selectedEntity instanceof WrapAppointment) {
+                WrapAppointment selectedAppointment = (WrapAppointment) selectedEntity;
+                delete(selectedAppointment, mainApp.getAppointments());
+            }
+        }
+
+    }
+
+    private void delete(WrapTodo selectedTodo, ObservableList<WrapTodo> todos) {
+        int index = todos.indexOf(selectedTodo);
+        PIMTodo todo = selectedTodo.unWrap();
+        todos.remove(index);
+        mainApp.getEntities().remove(todo);
+    }
+
+    private void delete(WrapAppointment selectedAppointment, ObservableList<WrapAppointment> appointments) {
+        int index = appointments.indexOf(selectedAppointment);
+        PIMAppointment appointment = selectedAppointment.unWrap();
+        appointments.remove(index);
+        mainApp.getEntities().remove(appointment);
+    }
+
+    public void delete(ContactViewController contactViewController) {
+        int selectedIndex = contactViewController.contactTable.getSelectionModel().getSelectedIndex();
+        PIMContact contact = contactViewController.contactTable.getSelectionModel().getSelectedItem().unWrap();
+        contactViewController.contactTable.getItems().remove(selectedIndex);
+        mainApp.getEntities().remove(contact);
+    }
+
+    private void delete(NoteViewController noteViewController) {
+        int selectedIndex = noteViewController.noteTable.getSelectionModel().getSelectedIndex();
+        PIMNote note = noteViewController.noteTable.getSelectionModel().getSelectedItem().unWrap();
+        noteViewController.noteTable.getItems().remove(selectedIndex);
+        mainApp.getEntities().remove(note);
     }
 
 
@@ -331,7 +476,11 @@ public class MainCalendarController {
                 if (o != null) {
                     realText = realClazz.getDeclaredFields()[i];
                     realText.setAccessible(true);
-                    textFields[i].setText((String) realText.get(o));
+                    if (realText.getType().equals(String.class)) {
+                        textFields[i].setText((String) realText.get(o));
+                    } else if (realText.getType().equals(LocalDate.class)) {
+                        textFields[i].setText(((LocalDate) realText.get(o)).format(mdy));
+                    }
                 }
                 textFields[i].setPromptText(text.getName());
                 stringProperties[i] = new SimpleStringProperty();

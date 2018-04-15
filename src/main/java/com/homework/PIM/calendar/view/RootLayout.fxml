@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <MenuBar prefHeight="30.0" BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0"
+            prefWidth="1440.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.homework.PIM.calendar.controller.RootLayoutController">
+    <top>
+        <MenuBar prefHeight="30.0" BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="文件">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="新建" onAction="#handleNew"/>
+                        <MenuItem mnemonicParsing="false" text="打开" onAction="#handleOpen"/>
+                        <MenuItem mnemonicParsing="false" text="保存" onAction="#handleSave"/>
+                        <MenuItem mnemonicParsing="false" text="另存为" onAction="#handleSaveAs"/>
+                        <MenuItem mnemonicParsing="false" text="关闭" onAction="#handleExit"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="帮助">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="关于" onAction="#handleAbout"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
 </BorderPane>

@@ -4,9 +4,7 @@ import com.homework.PIM.calendar.CalendarMainApp;
 import com.homework.PIM.calendar.warpper.WrapAppointment;
 import com.homework.PIM.calendar.warpper.WrapEntity;
 import com.homework.PIM.calendar.warpper.WrapTodo;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +21,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
@@ -42,10 +41,8 @@ public class CalendarViewController {
     private ObservableList<WrapTodo> thisMonthTodos;
     private ObservableList<WrapAppointment> thisMonthAppointment;
 
-    private ObjectProperty<WrapEntity> selectedItems = new SimpleObjectProperty<>();
-    private BooleanProperty todoSelected = new SimpleBooleanProperty(false);
-    private BooleanProperty appSelected = new SimpleBooleanProperty(false);
-    private ObservableMap<WrapEntity, BooleanProperty> entitySelectMap = FXCollections.observableHashMap();
+
+    private ObservableMap<Label, WrapEntity> labelSelectMap = FXCollections.observableHashMap();
 
     private CalendarMainApp mainApp;
     private MainCalendarController mainCalendarController;
@@ -59,7 +56,9 @@ public class CalendarViewController {
         flowPane.getChildren().clear();
         //得到时间选择器这个月的首日
         LocalDate dayInMonth = labelDate.with(TemporalAdjusters.firstDayOfMonth());
-
+        if (!dayInMonth.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            dayInMonth = dayInMonth.plusDays(-dayInMonth.getDayOfWeek().getValue());
+        }
         int cellNumber = 35;
         Color color;
         for (int i = 0; i < cellNumber; i++) {
@@ -120,19 +119,16 @@ public class CalendarViewController {
 
         //打印出当天的todo
         for (WrapTodo todo : thisMonthTodos) {
-            if (todo.getDate().equals(labelDate)) {
+            if (todo.getTime().equals(labelDate)) {
                 Label todoText = new Label("项目: " + todo.getPriority() + "," + todo.getText());
                 todoText.setWrapText(true);
                 //设置浅灰色背景
                 todoText.setBackground(new Background(new BackgroundFill(Color.valueOf("#E8E8E8"), null, null)));
 
                 //
-                todoText.setOnMousePressed(new MouseSelectedEvent(todoText, todoSelected, todo));
-                entitySelectMap.put(todo, todoSelected);
+                todoText.setOnMousePressed(new MouseSelectedEvent(todoText, todo));
+                labelSelectMap.put(todoText, todo);
 
-                if (entitySelectMap.get(todo).get()) {
-                    todoText.setEffect(new DropShadow());
-                }
                 vBox.getChildren().add(todoText);
             }
         }
@@ -144,12 +140,9 @@ public class CalendarViewController {
                 //设置浅蓝色背景
                 appointmentText.setBackground(new Background(new BackgroundFill(Color.valueOf("0099FF"), null, null)));
                 //
-                appointmentText.setOnMousePressed(new MouseSelectedEvent(appointmentText, appSelected, appointment));
-                entitySelectMap.put(appointment, appSelected);
+                appointmentText.setOnMousePressed(new MouseSelectedEvent(appointmentText, appointment));
+                labelSelectMap.put(appointmentText, appointment);
 
-                if (entitySelectMap.get(appointment).get()) {
-                    appointmentText.setEffect(new DropShadow());
-                }
                 vBox.getChildren().add(appointmentText);
             }
         }
@@ -196,7 +189,7 @@ public class CalendarViewController {
         thisMonthTodos = mainApp.getTodos().filtered(
                 (WrapTodo todo) -> {
                     try {
-                        return todo.getDate().getMonthValue() == labelDate.getMonthValue();
+                        return todo.getTime().getMonthValue() == labelDate.getMonthValue();
                     } catch (Exception e) {
                         return false;
                     }
@@ -213,17 +206,16 @@ public class CalendarViewController {
         );
 
         loadDateGrip();
-        selectedItems.addListener(
+        mainApp.selectedItemProperty().addListener(
                 (observe, oldValue, newValue) -> {
-                    entitySelectMap.forEach(
+                    labelSelectMap.forEach(
                             (k, v) -> {
-                                if (!k.equals(newValue)) {
-                                    v.set(false);
+                                if (!v.equals(newValue)) {
+                                    k.setEffect(null);
                                 }
                             }
                     );
                     System.out.println("change");
-                    loadDateGrip();
                 }
         );
 
@@ -231,12 +223,10 @@ public class CalendarViewController {
 
     private class MouseSelectedEvent implements EventHandler<MouseEvent> {
         Label label;
-        BooleanProperty select;
         WrapEntity wrapEntity;
 
-        MouseSelectedEvent(Label label, BooleanProperty select, WrapEntity wrapEntity) {
+        MouseSelectedEvent(Label label, WrapEntity wrapEntity) {
             this.label = label;
-            this.select = select;
             this.wrapEntity = wrapEntity;
 
         }
@@ -244,12 +234,8 @@ public class CalendarViewController {
         @Override
         public void handle(MouseEvent event) {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                if (!select.get()) {
-                    select.set(true);
-                    label.setEffect(new DropShadow());
-                }
-                selectedItems.set(wrapEntity);
-                System.out.println(selectedItems.toString());
+                label.setEffect(new DropShadow());
+                mainApp.selectedItemProperty().set(wrapEntity);
             }
         }
     }

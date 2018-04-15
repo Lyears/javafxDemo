@@ -39,7 +39,7 @@ public class NoteViewController {
         );
     }
 
-    private void showNoteDetails(WrapNote note) {
+    public void showNoteDetails(WrapNote note) {
         if (note != null) {
             priorityLabel.setText(note.getPriority());
             noteLabel.setText(note.getNote());
@@ -47,30 +47,6 @@ public class NoteViewController {
             priorityLabel.setText("");
             noteLabel.setText("");
         }
-    }
-
-    public void editNoteClick(ActionEvent event) throws Exception {
-        MainCalendarController.AlertBox alertBox = mainCalendarController.new AlertBox();
-        WrapNote selectNote = noteTable.getSelectionModel().getSelectedItem();
-        ObservableList<WrapNote> notes = mainApp.getNotes();
-        int index = notes.indexOf(selectNote);
-        alertBox.display("编辑联系人", PIMNote.class, selectNote.unWrap());
-        boolean okClick = alertBox.isOkClicked();
-        //如果点击提交，则将原来的属性替换
-        //如果点击关闭，则什么事情也不发生
-        if (okClick) {
-            selectNote = new WrapNote((PIMNote) alertBox.entity);
-            notes.set(index, selectNote);
-            noteTable.getSelectionModel().select(selectNote);
-            showNoteDetails(selectNote);
-        }
-    }
-
-    public void deleteNoteClick(ActionEvent event) {
-        int selectedIndex = noteTable.getSelectionModel().getSelectedIndex();
-        PIMNote note = noteTable.getSelectionModel().getSelectedItem().unWrap();
-        noteTable.getItems().remove(selectedIndex);
-        mainApp.getEntities().remove(note);
     }
 
     public CalendarMainApp getMainApp() {

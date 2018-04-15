@@ -1,69 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
-<SplitPane dividerPositions="0.29797979797979796" prefHeight="670.0" prefWidth="1100.0" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.homework.PIM.calendar.controller.NoteViewController">
-    <items>
-        <AnchorPane maxWidth="300.0" minHeight="0.0" minWidth="300.0" prefHeight="700.0" prefWidth="300.0">
+<SplitPane dividerPositions="0.29797979797979796" prefHeight="670.0" prefWidth="1100.0" BorderPane.alignment="CENTER"
+           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.homework.PIM.calendar.controller.NoteViewController">
+    <AnchorPane maxWidth="300.0" minHeight="0.0" minWidth="300.0" prefHeight="700.0" prefWidth="300.0">
+        <TableView fx:id="noteTable" prefHeight="698.0" prefWidth="323.0" AnchorPane.bottomAnchor="20.0"
+                   AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <columns>
+                <TableColumn fx:id="noteColumn" minWidth="140.0" prefWidth="280.0" text="笔记"/>
+            </columns>
+        </TableView>
+    </AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="800.0">
+        <Label layoutX="36.0" layoutY="26.0" text="笔记" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="20.0">
+            <font>
+                <Font name="LiHei Pro" size="28.0"/>
+            </font>
+            <graphic>
+                <ImageView fitHeight="30" fitWidth="30">
+                    <Image url="@/note.png"/>
+                </ImageView>
+            </graphic>
+        </Label>
+        <GridPane layoutX="111.0" layoutY="70.0" prefHeight="234.0" prefWidth="415.0"
+                  AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
             <children>
-                <TableView fx:id="noteTable" prefHeight="698.0" prefWidth="323.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                    <columns>
-                        <TableColumn fx:id="noteColumn" minWidth="140.0" prefWidth="280.0" text="笔记" />
-                    </columns>
-                </TableView>
-            </children>
-        </AnchorPane>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="800.0">
-            <children>
-                <Label layoutX="36.0" layoutY="26.0" text="笔记" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="20.0">
+                <Label text="Note" GridPane.rowIndex="1">
                     <font>
-                        <Font name="LiHei Pro" size="28.0" />
+                        <Font size="18.0"/>
                     </font>
                 </Label>
-                <GridPane layoutX="111.0" layoutY="70.0" prefHeight="234.0" prefWidth="415.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
-                        <Label text="Note" GridPane.rowIndex="1">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
-                        <Label text="Priority">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="priorityLabel" text="Label" GridPane.columnIndex="1">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="noteLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
-                    </children>
-                </GridPane>
-                <HBox alignment="CENTER" layoutX="501.0" layoutY="548.0" prefHeight="100.0" prefWidth="200.0" spacing="20.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                    <children>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="60.0" text="编辑" onAction="#editNoteClick" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="60.0" text="删除" onAction="#deleteNoteClick" />
-                    </children>
-                </HBox>
+                <Label text="Priority">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="priorityLabel" text="Label" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="noteLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
             </children>
-        </AnchorPane>
-    </items>
+        </GridPane>
+    </AnchorPane>
 </SplitPane>

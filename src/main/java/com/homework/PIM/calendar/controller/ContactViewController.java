@@ -54,7 +54,7 @@ public class ContactViewController {
      *
      * @param contact 传入的联系人包装类
      */
-    private void showContactDetails(WrapContact contact) {
+    public void showContactDetails(WrapContact contact) {
         if (contact != null) {
             priorityLabel.setText(contact.getPriority());
             firstNameLabel.setText(contact.getFirstName());
@@ -68,29 +68,6 @@ public class ContactViewController {
         }
     }
 
-    public void editContactClick(ActionEvent event) throws Exception {
-        MainCalendarController.AlertBox alertBox = mainCalendarController.new AlertBox();
-        WrapContact selectedContact = contactTable.getSelectionModel().getSelectedItem();
-        ObservableList<WrapContact> contacts = mainApp.getContacts();
-        int index = contacts.indexOf(selectedContact);
-        alertBox.display("编辑联系人", PIMContact.class, selectedContact.unWrap());
-        boolean okClick = alertBox.isOkClicked();
-        //如果点击提交，则将原来的属性移除，将新增的属性添加
-        //如果点击关闭，则什么事情也不发生
-        if (okClick) {
-            selectedContact = new WrapContact((PIMContact) alertBox.entity);
-            contacts.set(index, selectedContact);
-            contactTable.getSelectionModel().select(selectedContact);
-            showContactDetails(selectedContact);
-        }
-    }
-
-    public void deleteContactClick(ActionEvent event) {
-        int selectedIndex = contactTable.getSelectionModel().getSelectedIndex();
-        PIMContact contact = contactTable.getSelectionModel().getSelectedItem().unWrap();
-        contactTable.getItems().remove(selectedIndex);
-        mainApp.getEntities().remove(contact);
-    }
 
     public CalendarMainApp getMainApp() {
         return mainApp;

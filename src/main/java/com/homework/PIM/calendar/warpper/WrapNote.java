@@ -8,16 +8,20 @@ import javafx.beans.property.StringProperty;
  * @author fzm
  * @date 2018/4/10
  **/
-public class WrapNote extends WrapEntity{
+public class WrapNote extends WrapEntity {
     private final StringProperty priority;
     private final StringProperty note;
 
-    public WrapNote(PIMNote note){
+    public WrapNote(PIMNote note) {
         this.priority = new SimpleStringProperty(note.getPriority());
         this.note = new SimpleStringProperty(note.getNote());
     }
 
-    public PIMNote unWrap(){
+    public WrapNote() {
+        this(null);
+    }
+
+    public PIMNote unWrap() {
         PIMNote note = new PIMNote();
         note.setPriority(getPriority());
         note.setNote(getNote());
@@ -30,24 +34,24 @@ public class WrapNote extends WrapEntity{
     }
 
     @Override
-    public StringProperty priorityProperty() {
-        return priority;
+    public void setPriority(String priority) {
+        this.priority.set(priority);
     }
 
     @Override
-    public void setPriority(String priority) {
-        this.priority.set(priority);
+    public StringProperty priorityProperty() {
+        return priority;
     }
 
     public String getNote() {
         return note.get();
     }
 
-    public StringProperty noteProperty() {
-        return note;
-    }
-
     public void setNote(String note) {
         this.note.set(note);
+    }
+
+    public StringProperty noteProperty() {
+        return note;
     }
 }
