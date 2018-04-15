@@ -2,6 +2,7 @@ package com.homework.PIM.calendar.controller;
 
 import com.homework.PIM.calendar.CalendarMainApp;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -22,6 +23,7 @@ public class RootLayoutController {
         mainApp.getContacts().clear();
         mainApp.setPersonFilePath(null);
     }
+
     @FXML
     private void handleOpen() {
         FileChooser fileChooser = new FileChooser();
@@ -81,8 +83,12 @@ public class RootLayoutController {
      */
     @FXML
     private void handleAbout() {
-
+        Alert aboutAlert = new Alert(Alert.AlertType.INFORMATION, "作者: 范知名\n 博客: https:lyears.github.io");
+        aboutAlert.setTitle("关于");
+        aboutAlert.setHeaderText("关于作者");
+        aboutAlert.showAndWait();
     }
+
     /**
      * 关闭应用
      */

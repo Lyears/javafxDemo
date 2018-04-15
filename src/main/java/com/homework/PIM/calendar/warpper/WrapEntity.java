@@ -3,14 +3,12 @@ package com.homework.PIM.calendar.warpper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
 
 /**
  * @author fzm
  * @date 2018/4/14
  **/
-@XmlRootElement(name = "entities")
 public abstract class WrapEntity {
     private StringProperty priority;
 

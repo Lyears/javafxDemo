@@ -8,14 +8,14 @@ import java.util.List;
  * @date 2018/3/29
  **/
 public interface Collection<E> extends List<E>{
-    Collection getNotes();
+    Collection<E> getNotes();
 
-    Collection getTodos();
+    Collection<E> getTodos();
 
-    Collection getAppointments();
+    Collection<E> getAppointments();
 
-    Collection getContact();
+    Collection<E> getContact();
 
-    Collection getItemsForDate(LocalDate d);
+    Collection<E> getItemsForDate(LocalDate d);
 
 }

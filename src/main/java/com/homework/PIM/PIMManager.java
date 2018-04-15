@@ -14,7 +14,8 @@ import java.util.Scanner;
  * @date 2018/3/27
  **/
 public class PIMManager {
-    static DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private static DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         boolean running = true;
@@ -136,13 +137,15 @@ public class PIMManager {
         }
     }
 
-    private static void Out(Collection result, String name) {
+    private static void Out(Collection<PIMEntity> result, String name) {
         if (result.size() == 0) {
             System.out.println("There are 0 " + name + ".");
         } else {
             System.out.println();
-            for (Object item : result) {
-                System.out.println(name + " " + (result.indexOf(item) + 1) + ": " + item.toString());
+            int index = 0;
+            for (PIMEntity item : result) {
+                System.out.println(name + " " + (index + 1) + ": " + item.toString());
+                index++;
             }
         }
     }
@@ -180,7 +183,7 @@ public class PIMManager {
         System.out.println("Items have been saved.");
     }
 
-     public static List<PIMEntity> load() throws IOException, ClassNotFoundException {
+    public static List<PIMEntity> load() throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream("/Users/fzm/Desktop/PIM.ser");
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         return (List<PIMEntity>) objectInputStream.readObject();

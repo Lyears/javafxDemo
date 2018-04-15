@@ -2,6 +2,7 @@ package com.homework.PIM.calendar;
 
 import com.homework.PIM.Collection;
 import com.homework.PIM.PIMCollection;
+import com.homework.PIM.PIMManager;
 import com.homework.PIM.calendar.controller.MainCalendarController;
 import com.homework.PIM.calendar.controller.RootLayoutController;
 import com.homework.PIM.calendar.warpper.*;
@@ -21,6 +22,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -51,7 +53,6 @@ public class CalendarMainApp extends Application {
     private List<WrapAppointment> wrapAppointments = new ArrayList<>();
 
     public CalendarMainApp() {
-
         Collection contactCollection = entities.getContact();
         for (Object pimContact : contactCollection) {
             //将实体类转化为包装类，便于数据的改动与添加及时与控制器绑定
@@ -103,6 +104,12 @@ public class CalendarMainApp extends Application {
         Scene scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        //首先打开加载在注册表中的配置
+        File file = getPersonFilePath();
+        if (file != null) {
+            loadPersonDataFromFile(file);
+        }
     }
 
     private void initCalendar() throws Exception {

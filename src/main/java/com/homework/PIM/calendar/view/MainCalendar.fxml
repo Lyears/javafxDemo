@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.*?>
+<?xml version="1.0" encoding="UTF-8"?><?import javafx.scene.control.*?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -26,6 +24,7 @@
                           AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0">
                 <graphic>
                     <ImageView fitHeight="20" fitWidth="20">
+
                         <Image url="@/contact.png"/>
                     </ImageView>
                 </graphic>
@@ -34,9 +33,8 @@
                           AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0">
                 <graphic>
                     <ImageView fitHeight="20" fitWidth="20">
-                        <image>
-                            <Image url="@/note.png"/>
-                        </image>
+
+                        <Image url="@/note.png"/>
                     </ImageView>
                 </graphic>
             </ToggleButton>
@@ -45,15 +43,14 @@
     </left>
     <top>
         <AnchorPane prefHeight="170.0" prefWidth="200.0">
+
             <Pane prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10" BorderPane.alignment="CENTER">
                 <Button fx:id="newAppointment" contentDisplay="TOP" layoutX="10.0" layoutY="10.0"
                         mnemonicParsing="false" onAction="#newAppointmentClick" prefHeight="120.0"
                         prefWidth="85.0" text="新建约会">
                     <graphic>
                         <ImageView fitHeight="40" fitWidth="40">
-                            <image>
-                                <Image url="@/calendar.png"/>
-                            </image>
+                            <Image url="@/calendar.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
@@ -71,7 +68,9 @@
                         textOverrun="WORD_ELLIPSIS">
                     <graphic>
                         <ImageView fitHeight="40" fitWidth="40">
-                            <Image url="@/todo.png"/>
+                            <image>
+                                <Image url="@/todo.png"/>
+                            </image>
                         </ImageView>
                     </graphic>
                     <text>新建项目</text>
@@ -84,7 +83,9 @@
                         text="今天">
                     <graphic>
                         <ImageView fitHeight="40" fitWidth="40">
-                            <Image url="@/today.png"/>
+                            <image>
+                                <Image url="@/today.png"/>
+                            </image>
                         </ImageView>
                     </graphic>
                 </Button>
@@ -93,7 +94,9 @@
                         text="随后7天">
                     <graphic>
                         <ImageView fitHeight="40" fitWidth="40">
-                            <Image url="@/backseven.png"/>
+                            <image>
+                                <Image url="@/backseven.png"/>
+                            </image>
                         </ImageView>
                     </graphic>
                 </Button>
@@ -107,7 +110,9 @@
                     text="新建联系人" textOverrun="WORD_ELLIPSIS">
                 <graphic>
                     <ImageView fitHeight="40" fitWidth="40">
-                        <Image url="@/contact.png"/>
+                        <image>
+                            <Image url="@/contact.png"/>
+                        </image>
                     </ImageView>
                 </graphic>
             </Button>
@@ -127,7 +132,9 @@
                     onAction="#editButtonClick" prefHeight="120.0" prefWidth="85.0" text="编辑">
                 <graphic>
                     <ImageView fitHeight="40" fitWidth="40">
-                        <Image url="@/edit.png"/>
+                        <image>
+                            <Image url="@/edit.png"/>
+                        </image>
                     </ImageView>
                 </graphic>
             </Button>
@@ -141,6 +148,12 @@
                     </ImageView>
                 </graphic>
             </Button>
+            <Label alignment="CENTER" layoutX="645.0" layoutY="130.0" prefWidth="75.0" text="选项"
+                   textAlignment="CENTER" textOverrun="CLIP">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+            </Label>
         </AnchorPane>
     </top>
     <bottom>
