@@ -26,7 +26,9 @@ public class WrapAppointment extends WrapEntity {
     }
 
     public WrapAppointment() {
-        this(null);
+        this.priority = new SimpleStringProperty();
+        this.date = new SimpleObjectProperty<>();
+        this.description = new SimpleStringProperty();
     }
 
     public PIMAppointment unWrap() {

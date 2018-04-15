@@ -27,7 +27,9 @@ public class WrapTodo extends WrapEntity {
     }
 
     public WrapTodo() {
-        this(null);
+        this.priority = new SimpleStringProperty();
+        this.time = new SimpleObjectProperty<>();
+        this.text = new SimpleStringProperty();
     }
 
     public PIMTodo unWrap() {

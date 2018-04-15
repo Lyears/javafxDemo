@@ -24,7 +24,10 @@ public class WrapContact extends WrapEntity {
     }
 
     public WrapContact() {
-        this(null);
+        this.priority = new SimpleStringProperty();
+        this.firstName = new SimpleStringProperty();
+        this.lastName = new SimpleStringProperty();
+        this.email = new SimpleStringProperty();
     }
 
     public PIMContact unWrap() {

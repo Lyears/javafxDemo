@@ -2,7 +2,6 @@ package com.homework.PIM.calendar;
 
 import com.homework.PIM.Collection;
 import com.homework.PIM.PIMCollection;
-import com.homework.PIM.PIMManager;
 import com.homework.PIM.calendar.controller.MainCalendarController;
 import com.homework.PIM.calendar.controller.RootLayoutController;
 import com.homework.PIM.calendar.warpper.*;
@@ -51,9 +50,7 @@ public class CalendarMainApp extends Application {
     private List<WrapTodo> wrapTodos = new ArrayList<>();
     private List<WrapAppointment> wrapAppointments = new ArrayList<>();
 
-    public CalendarMainApp() throws Exception {
-        //在初始化Calendar页面时加载持久化对象
-        entities.addAll(PIMManager.load());
+    public CalendarMainApp() {
 
         Collection contactCollection = entities.getContact();
         for (Object pimContact : contactCollection) {
@@ -97,7 +94,7 @@ public class CalendarMainApp extends Application {
 
     }
 
-    public void initRootLayout() throws Exception {
+    private void initRootLayout() throws Exception {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/RootLayout.fxml"));
         this.rootLayout = loader.load();
@@ -108,7 +105,7 @@ public class CalendarMainApp extends Application {
         primaryStage.show();
     }
 
-    public void initCalendar() throws Exception {
+    private void initCalendar() throws Exception {
 
         // TODO: 2018/4/10 重构持久化加载方式
         //加载主视图
@@ -145,42 +142,50 @@ public class CalendarMainApp extends Application {
         if (file != null) {
             prefs.put("filePath", file.getPath());
 
-            // Update the stage title.
+            // 更新标题
             primaryStage.setTitle("日历-个人管理系统 - " + file.getName());
         } else {
             prefs.remove("filePath");
-
-            // Update the stage title.
             primaryStage.setTitle("日历-个人管理系统");
         }
     }
 
+    /**
+     * 加载持久化文件
+     *
+     * @param file 选择加载的文件
+     */
     public void loadPersonDataFromFile(File file) {
         try {
             JAXBContext context = JAXBContext
                     .newInstance(ItemsListWrapper.class);
             Unmarshaller um = context.createUnmarshaller();
 
-            // Reading XML from the file and unmarshalling.
+            //读取xml文件并解为对象
             ItemsListWrapper wrapper = (ItemsListWrapper) um.unmarshal(file);
 
-            wrapContacts.clear();
-            wrapTodos.clear();
-            wrapAppointments.clear();
-            wrapNotes.clear();
-            wrapTodos.addAll(wrapper.getTodos());
-            wrapAppointments.addAll(wrapper.getAppointments());
-            wrapNotes.addAll(wrapper.getNotes());
-            wrapContacts.addAll(wrapper.getContacts());
+            contacts.clear();
+            todos.clear();
+            appointments.clear();
+            notes.clear();
+            todos.addAll(wrapper.getTodos());
+            appointments.addAll(wrapper.getAppointments());
+            notes.addAll(wrapper.getNotes());
+            contacts.addAll(wrapper.getContacts());
 
-
-            // Save the file path to the registry.
+            // 保存文件配置进入注册表
             setPersonFilePath(file);
 
-        } catch (Exception e) { // catches ANY exception
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    /**
+     * 保存持久化文件
+     *
+     * @param file 选择文件
+     */
     public void savePersonDataToFile(File file) {
         try {
             JAXBContext context = JAXBContext
@@ -194,10 +199,10 @@ public class CalendarMainApp extends Application {
             wrapper.setTodos(wrapTodos);
             wrapper.setNotes(wrapNotes);
 
-            // Marshalling and saving XML to the file.
+            // 将对象编为xml文件
             m.marshal(wrapper, file);
 
-            // Save the file path to the registry.
+            // 保存文件配置进入注册表
             setPersonFilePath(file);
         } catch (Exception e) {
             e.printStackTrace();

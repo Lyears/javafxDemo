@@ -18,7 +18,8 @@ public class WrapNote extends WrapEntity {
     }
 
     public WrapNote() {
-        this(null);
+        this.priority = new SimpleStringProperty();
+        this.note = new SimpleStringProperty();
     }
 
     public PIMNote unWrap() {

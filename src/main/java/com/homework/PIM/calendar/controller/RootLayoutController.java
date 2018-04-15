@@ -31,7 +31,7 @@ public class RootLayoutController {
                 "XML files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        // Show save file dialog
+        // 打开文件选择窗口
         File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
         if (file != null) {
@@ -40,8 +40,7 @@ public class RootLayoutController {
     }
 
     /**
-     * Saves the file to the person file that is currently open. If there is no
-     * open file, the "save as" dialog is shown.
+     * 保存文件，如果没有对应的持久化文件，就使用另存为方法。
      */
     @FXML
     private void handleSave() {
@@ -54,22 +53,22 @@ public class RootLayoutController {
     }
 
     /**
-     * Opens a FileChooser to let the user select a file to save to.
+     * 加载一个文件选择器选择文件并保存
      */
     @FXML
     private void handleSaveAs() {
         FileChooser fileChooser = new FileChooser();
 
-        // Set extension filter
+        // 设置文件类型
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
                 "XML files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        // Show save file dialog
+        // 打开一个文件选择窗口
         File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
 
         if (file != null) {
-            // Make sure it has the correct extension
+            // 确保文件后缀为.xml
             if (!file.getPath().endsWith(".xml")) {
                 file = new File(file.getPath() + ".xml");
             }
@@ -78,14 +77,14 @@ public class RootLayoutController {
     }
 
     /**
-     * Opens an about dialog.
+     * 打开一个关于窗口
      */
     @FXML
     private void handleAbout() {
 
     }
     /**
-     * Closes the application.
+     * 关闭应用
      */
     @FXML
     private void handleExit() {

@@ -215,7 +215,6 @@ public class CalendarViewController {
                                 }
                             }
                     );
-                    System.out.println("change");
                 }
         );
 
