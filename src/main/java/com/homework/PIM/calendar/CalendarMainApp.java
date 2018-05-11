@@ -2,7 +2,6 @@ package com.homework.PIM.calendar;
 
 import com.homework.PIM.Collection;
 import com.homework.PIM.PIMCollection;
-import com.homework.PIM.PIMManager;
 import com.homework.PIM.calendar.controller.MainCalendarController;
 import com.homework.PIM.calendar.controller.RootLayoutController;
 import com.homework.PIM.calendar.warpper.*;
@@ -22,7 +21,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -53,9 +52,18 @@ public class CalendarMainApp extends Application {
     private List<WrapAppointment> wrapAppointments = new ArrayList<>();
 
     public CalendarMainApp() {
+        loadEntities();
+//        loadWrapEntities();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private void loadEntities() {
         Collection contactCollection = entities.getContact();
+        //将实体类转化为包装类，便于数据的改动与添加及时与控制器绑定
         for (Object pimContact : contactCollection) {
-            //将实体类转化为包装类，便于数据的改动与添加及时与控制器绑定
             WrapContact contact = new WrapContact((PIMContact) pimContact);
             contacts.add(contact);
         }
@@ -75,15 +83,18 @@ public class CalendarMainApp extends Application {
             WrapAppointment appointment = new WrapAppointment((PIMAppointment) pimAppointment);
             appointments.add(appointment);
         }
+    }
+
+    private void loadWrapEntities() {
+        wrapAppointments.clear();
+        wrapContacts.clear();
+        wrapNotes.clear();
+        wrapTodos.clear();
+
         wrapContacts.addAll(contacts);
         wrapNotes.addAll(notes);
         wrapTodos.addAll(todos);
         wrapAppointments.addAll(appointments);
-
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     @Override
@@ -162,31 +173,35 @@ public class CalendarMainApp extends Application {
      *
      * @param file 选择加载的文件
      */
-    public void loadPersonDataFromFile(File file) {
-        try {
-            JAXBContext context = JAXBContext
-                    .newInstance(ItemsListWrapper.class);
-            Unmarshaller um = context.createUnmarshaller();
+    public void loadPersonDataFromFile(File file) throws Exception {
+        JAXBContext context = JAXBContext
+                .newInstance(ItemsListWrapper.class);
+        Unmarshaller um = context.createUnmarshaller();
 
-            //读取xml文件并解为对象
-            ItemsListWrapper wrapper = (ItemsListWrapper) um.unmarshal(file);
+        //读取xml文件并解为对象
+        ItemsListWrapper wrapper = (ItemsListWrapper) um.unmarshal(file);
 
-            contacts.clear();
-            todos.clear();
-            appointments.clear();
-            notes.clear();
+        contacts.clear();
+        todos.clear();
+        appointments.clear();
+        notes.clear();
+
+        if (wrapper.getTodos() != null) {
             todos.addAll(wrapper.getTodos());
-            appointments.addAll(wrapper.getAppointments());
-            notes.addAll(wrapper.getNotes());
-            contacts.addAll(wrapper.getContacts());
-
-            // 保存文件配置进入注册表
-            setPersonFilePath(file);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        if (wrapper.getAppointments() != null) {
+            appointments.addAll(wrapper.getAppointments());
+        }
+        if (wrapper.getNotes() != null) {
+            notes.addAll(wrapper.getNotes());
+        }
+        if (wrapper.getContacts() != null) {
+            contacts.addAll(wrapper.getContacts());
+        }
+        // 保存文件配置进入注册表
+        setPersonFilePath(file);
     }
+
 
     /**
      * 保存持久化文件
@@ -200,11 +215,18 @@ public class CalendarMainApp extends Application {
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
+            loadWrapEntities();
+
             ItemsListWrapper wrapper = new ItemsListWrapper();
             wrapper.setAppointments(wrapAppointments);
             wrapper.setContacts(wrapContacts);
             wrapper.setTodos(wrapTodos);
             wrapper.setNotes(wrapNotes);
+
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("");
+            fileWriter.flush();
+            fileWriter.close();
 
             // 将对象编为xml文件
             m.marshal(wrapper, file);

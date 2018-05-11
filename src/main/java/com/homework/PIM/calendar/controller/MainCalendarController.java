@@ -40,6 +40,8 @@ public class MainCalendarController {
     public Button newContact;
     public Button todayButton;
     public Button lateButton;
+    public Button frontMonth;
+    public Button lateMonth;
     public Button editButton;
     public Button deleteButton;
 
@@ -125,6 +127,11 @@ public class MainCalendarController {
         );
     }
 
+    /**
+     * 加载中央视图
+     * @param fileName  视图对应的fxml文件名
+     * @param mainApp   main函数
+     */
     public void setCenterPane(String fileName, CalendarMainApp mainApp) {
         try {
             if (fileName != null) {
@@ -215,6 +222,12 @@ public class MainCalendarController {
 
     public void lateButtonClick(ActionEvent event) {
         datePicker.valueProperty().set(datePicker.getValue().plusDays(7));
+    }
+    public void lateMonthClick(ActionEvent event) {
+        datePicker.valueProperty().set(datePicker.getValue().plusMonths(1));
+    }
+    public void frontMonthClick(ActionEvent event) {
+        datePicker.valueProperty().set(datePicker.getValue().plusMonths(-1));
     }
 
     /**
@@ -438,8 +451,6 @@ public class MainCalendarController {
 
                     }
 
-                    // TODO: 2018/4/10 重构
-
                     window.close();
 
                     okClicked = true;
@@ -449,11 +460,13 @@ public class MainCalendarController {
                     } else {
                         entities.set(entities.indexOf(o), entity);
                     }
-                    System.out.println(entities);
+//                    System.out.println(entities);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
+
+
 
 
             VBox vBox = new VBox(15);
@@ -485,8 +498,6 @@ public class MainCalendarController {
                 textFields[i].setPromptText(text.getName());
                 stringProperties[i] = new SimpleStringProperty();
                 stringProperties[i].bind(textFields[i].textProperty());
-
-                //
 
                 AnchorPane anchorPane = new AnchorPane();
                 anchorPane.getChildren().addAll(label, textFields[i]);

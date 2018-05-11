@@ -2,7 +2,7 @@ package com.homework.PIM.calendar.controller;
 
 import com.homework.PIM.calendar.CalendarMainApp;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public class RootLayoutController {
     }
 
     @FXML
-    private void handleOpen() {
+    private void handleOpen() throws Exception {
         FileChooser fileChooser = new FileChooser();
 
         // 设置支持的文件类型
@@ -83,10 +83,14 @@ public class RootLayoutController {
      */
     @FXML
     private void handleAbout() {
-        Alert aboutAlert = new Alert(Alert.AlertType.INFORMATION, "作者: 范知名\n 博客: https:lyears.github.io");
+        Hyperlink link = new Hyperlink("博客: https:lyears.github.io\"");
+        Alert aboutAlert = new Alert(Alert.AlertType.NONE, "作者: 范知名\n 博客: https:lyears.github.io",new ButtonType("确定",ButtonBar.ButtonData.CANCEL_CLOSE));
+        aboutAlert.getDialogPane().getChildren().add(link);
+
         aboutAlert.setTitle("关于");
         aboutAlert.setHeaderText("关于作者");
         aboutAlert.showAndWait();
+
     }
 
     /**

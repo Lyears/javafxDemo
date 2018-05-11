@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -20,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -47,6 +49,22 @@ public class CalendarViewController {
     private CalendarMainApp mainApp;
     private MainCalendarController mainCalendarController;
 
+    /**
+     * 格式化输出日期
+     *
+     * @param i 日期数
+     * @return 格式化后的日期数
+     */
+    private static String formatting(int i) {
+        StringBuilder value = new StringBuilder();
+        if (i < 10) {
+            value.append("0").append(i);
+        } else {
+            value.append(i);
+        }
+        return value.toString();
+    }
+
     public void initialize() {
         flowPane.setVgap(0);
     }
@@ -63,13 +81,13 @@ public class CalendarViewController {
         Color color;
         for (int i = 0; i < cellNumber; i++) {
             if (dayInMonth.getMonthValue() != labelDate.getMonthValue()) {
-                color = Color.GRAY;
+                color = Color.valueOf("#BEBEBE");
             } else if (dayInMonth.equals(LocalDate.now())) {
-                color = Color.BLUE;
+                color = Color.valueOf("84C1FF");
             } else if (dayInMonth.equals(labelDate)) {
-                color = Color.RED;
+                color = Color.valueOf("#FF5151");
             } else {
-                color = Color.BLACK;
+                color = Color.WHITE;
             }
             //
             initDateGrip(dayInMonth, color);
@@ -110,11 +128,14 @@ public class CalendarViewController {
         ObservableList<Node> separators = FXCollections.observableArrayList();
         separators.addAll(separator, separator1, separator2, separator3);
 
-        VBox vBox = new VBox(10);
+        VBox vBox = new VBox(8);
         //设置日期编号
-        Label label = new Label(String.valueOf(labelDate.getDayOfMonth()));
+        Label label = new Label(formatting(labelDate.getDayOfMonth()));
         label.setFont(Font.font(14));
-        label.setTextFill(color);
+        label.setPrefWidth(20d);
+        label.setAlignment(Pos.CENTER);
+        label.setBackground(new Background(new BackgroundFill(color, new CornerRadii(100d), null)));
+
         vBox.getChildren().add(label);
 
         //打印出当天的todo
@@ -122,8 +143,8 @@ public class CalendarViewController {
             if (todo.getTime().equals(labelDate)) {
                 Label todoText = new Label("项目: " + todo.getPriority() + "," + todo.getText());
                 todoText.setWrapText(true);
-                //设置浅灰色背景
-                todoText.setBackground(new Background(new BackgroundFill(Color.valueOf("#E8E8E8"), null, null)));
+                //设置浅灰色背景和圆角
+                todoText.setBackground(new Background(new BackgroundFill(Color.valueOf("#E8E8E8"), new CornerRadii(6d), null)));
 
                 //
                 todoText.setOnMousePressed(new MouseSelectedEvent(todoText, todo));
@@ -137,8 +158,8 @@ public class CalendarViewController {
             if (appointment.getDate().equals(labelDate)) {
                 Label appointmentText = new Label("约会: " + appointment.getPriority() + "," + appointment.getDescription());
                 appointmentText.setWrapText(true);
-                //设置浅蓝色背景
-                appointmentText.setBackground(new Background(new BackgroundFill(Color.valueOf("0099FF"), null, null)));
+                //设置浅蓝色背景和圆角
+                appointmentText.setBackground(new Background(new BackgroundFill(Color.valueOf("0099FF"), new CornerRadii(6d), null)));
                 //
                 appointmentText.setOnMousePressed(new MouseSelectedEvent(appointmentText, appointment));
                 labelSelectMap.put(appointmentText, appointment);
@@ -149,6 +170,7 @@ public class CalendarViewController {
 
         pane.getChildren().addAll(vBox);
         pane.getChildren().addAll(separators);
+        AnchorPane.setTopAnchor(vBox, 5d);
         AnchorPane.setLeftAnchor(vBox, 10d);
         AnchorPane.setRightAnchor(vBox, 10d);
 
@@ -207,19 +229,21 @@ public class CalendarViewController {
 
         loadDateGrip();
         mainApp.selectedItemProperty().addListener(
-                (observe, oldValue, newValue) -> {
-                    labelSelectMap.forEach(
-                            (k, v) -> {
-                                if (!v.equals(newValue)) {
-                                    k.setEffect(null);
-                                }
+                (observe, oldValue, newValue) -> labelSelectMap.forEach(
+                        (k, v) -> {
+                            //每当选中的项目被修改时，将其他的样式清楚
+                            if (!v.equals(newValue)) {
+                                k.setEffect(null);
                             }
-                    );
-                }
+                        }
+                )
         );
 
     }
 
+    /**
+     * 定义选中事件
+     */
     private class MouseSelectedEvent implements EventHandler<MouseEvent> {
         Label label;
         WrapEntity wrapEntity;
@@ -232,6 +256,7 @@ public class CalendarViewController {
 
         @Override
         public void handle(MouseEvent event) {
+            //如果左键点击
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 label.setEffect(new DropShadow());
                 mainApp.selectedItemProperty().set(wrapEntity);
