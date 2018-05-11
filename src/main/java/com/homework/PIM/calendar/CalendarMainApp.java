@@ -43,47 +43,20 @@ public class CalendarMainApp extends Application {
     private ObjectProperty<WrapEntity> selectedItem = new SimpleObjectProperty<>();
 
     /**
-     * 新建一个集体参数
+     * 定义四个包装集合用于持久化
      */
-    private Collection<PIMEntity> entities = new PIMCollection<>();
-    //定义四个包装集合用于持久化
     private List<WrapContact> wrapContacts = new ArrayList<>();
     private List<WrapNote> wrapNotes = new ArrayList<>();
     private List<WrapTodo> wrapTodos = new ArrayList<>();
     private List<WrapAppointment> wrapAppointments = new ArrayList<>();
 
     public CalendarMainApp() {
-        loadEntities();
+//        loadEntities();
 //        loadWrapEntities();
     }
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    private void loadEntities() {
-        Collection contactCollection = entities.getContact();
-        //将实体类转化为包装类，便于数据的改动与添加及时与控制器绑定
-        for (Object pimContact : contactCollection) {
-            WrapContact contact = new WrapContact((PIMContact) pimContact);
-            contacts.add(contact);
-        }
-
-        Collection noteCollection = entities.getNotes();
-        for (Object pimNote : noteCollection) {
-            WrapNote note = new WrapNote((PIMNote) pimNote);
-            notes.add(note);
-        }
-        Collection todoCollection = entities.getTodos();
-        for (Object pimTodo : todoCollection) {
-            WrapTodo todo = new WrapTodo((PIMTodo) pimTodo);
-            todos.add(todo);
-        }
-        Collection appointmentCollection = entities.getAppointments();
-        for (Object pimAppointment : appointmentCollection) {
-            WrapAppointment appointment = new WrapAppointment((PIMAppointment) pimAppointment);
-            appointments.add(appointment);
-        }
     }
 
     /**
@@ -261,14 +234,6 @@ public class CalendarMainApp extends Application {
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-    }
-
-    public Collection<PIMEntity> getEntities() {
-        return entities;
-    }
-
-    public void setEntities(Collection<PIMEntity> entities) {
-        this.entities = entities;
     }
 
     public ObservableList<WrapContact> getContacts() {

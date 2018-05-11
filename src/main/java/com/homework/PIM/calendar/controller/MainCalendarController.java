@@ -1,6 +1,5 @@
 package com.homework.PIM.calendar.controller;
 
-import com.homework.PIM.Collection;
 import com.homework.PIM.calendar.CalendarMainApp;
 import com.homework.PIM.calendar.warpper.*;
 import com.homework.PIM.entity.*;
@@ -129,8 +128,9 @@ public class MainCalendarController {
 
     /**
      * 加载中央视图
-     * @param fileName  视图对应的fxml文件名
-     * @param mainApp   main函数
+     *
+     * @param fileName 视图对应的fxml文件名
+     * @param mainApp  main函数
      */
     public void setCenterPane(String fileName, CalendarMainApp mainApp) {
         try {
@@ -223,9 +223,11 @@ public class MainCalendarController {
     public void lateButtonClick(ActionEvent event) {
         datePicker.valueProperty().set(datePicker.getValue().plusDays(7));
     }
+
     public void lateMonthClick(ActionEvent event) {
         datePicker.valueProperty().set(datePicker.getValue().plusMonths(1));
     }
+
     public void frontMonthClick(ActionEvent event) {
         datePicker.valueProperty().set(datePicker.getValue().plusMonths(-1));
     }
@@ -344,31 +346,21 @@ public class MainCalendarController {
     }
 
     private void delete(WrapTodo selectedTodo, ObservableList<WrapTodo> todos) {
-        int index = todos.indexOf(selectedTodo);
-        PIMTodo todo = selectedTodo.unWrap();
-        todos.remove(index);
-        mainApp.getEntities().remove(todo);
+        todos.remove(selectedTodo);
     }
 
     private void delete(WrapAppointment selectedAppointment, ObservableList<WrapAppointment> appointments) {
-        int index = appointments.indexOf(selectedAppointment);
-        PIMAppointment appointment = selectedAppointment.unWrap();
-        appointments.remove(index);
-        mainApp.getEntities().remove(appointment);
+        appointments.remove(selectedAppointment);
     }
 
-    public void delete(ContactViewController contactViewController) {
+    private void delete(ContactViewController contactViewController) {
         int selectedIndex = contactViewController.contactTable.getSelectionModel().getSelectedIndex();
-        PIMContact contact = contactViewController.contactTable.getSelectionModel().getSelectedItem().unWrap();
         contactViewController.contactTable.getItems().remove(selectedIndex);
-        mainApp.getEntities().remove(contact);
     }
 
     private void delete(NoteViewController noteViewController) {
         int selectedIndex = noteViewController.noteTable.getSelectionModel().getSelectedIndex();
-        PIMNote note = noteViewController.noteTable.getSelectionModel().getSelectedItem().unWrap();
         noteViewController.noteTable.getItems().remove(selectedIndex);
-        mainApp.getEntities().remove(note);
     }
 
 
@@ -414,7 +406,6 @@ public class MainCalendarController {
          * @param o     设置传入的待编辑对象
          */
         void display(String title, Class clazz, Object o) throws Exception {
-            Collection<PIMEntity> entities = mainApp.getEntities();
 
             Stage window = new Stage();
             window.setTitle(title);
@@ -431,9 +422,6 @@ public class MainCalendarController {
 
             closeButton.setOnAction(event -> window.close());
 
-            boolean isNewOperation;
-            //判断是否为新建项目弹出框
-            isNewOperation = o == null;
             //提交按钮产生事件
             submitButton.setOnAction(event -> {
                 try {
@@ -454,19 +442,10 @@ public class MainCalendarController {
                     window.close();
 
                     okClicked = true;
-                    //若是新建项目，将产生的对象传入集合,否则将编辑后的对象替换
-                    if (isNewOperation) {
-                        entities.add(entity);
-                    } else {
-//                        entities.set(entities.indexOf(o), entity);
-                    }
-//                    System.out.println(entities);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-
-
 
 
             VBox vBox = new VBox(15);
