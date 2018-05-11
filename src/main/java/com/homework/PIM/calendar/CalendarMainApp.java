@@ -46,6 +46,7 @@ public class CalendarMainApp extends Application {
      * 新建一个集体参数
      */
     private Collection<PIMEntity> entities = new PIMCollection<>();
+    //定义四个包装集合用于持久化
     private List<WrapContact> wrapContacts = new ArrayList<>();
     private List<WrapNote> wrapNotes = new ArrayList<>();
     private List<WrapTodo> wrapTodos = new ArrayList<>();
@@ -85,7 +86,11 @@ public class CalendarMainApp extends Application {
         }
     }
 
+    /**
+     * 加载包装集合用于持久化项目
+     */
     private void loadWrapEntities() {
+        //在保存之前先清空持久化包装类，防止重复保存
         wrapAppointments.clear();
         wrapContacts.clear();
         wrapNotes.clear();
@@ -186,6 +191,7 @@ public class CalendarMainApp extends Application {
         appointments.clear();
         notes.clear();
 
+        //检测每个包装集合是否为空，不为空则将其加载进入集合
         if (wrapper.getTodos() != null) {
             todos.addAll(wrapper.getTodos());
         }
@@ -215,6 +221,7 @@ public class CalendarMainApp extends Application {
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
+            //加载包装集合，用于写入数据
             loadWrapEntities();
 
             ItemsListWrapper wrapper = new ItemsListWrapper();
@@ -223,6 +230,7 @@ public class CalendarMainApp extends Application {
             wrapper.setTodos(wrapTodos);
             wrapper.setNotes(wrapNotes);
 
+            //在保存文件之前先清空数据
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write("");
             fileWriter.flush();

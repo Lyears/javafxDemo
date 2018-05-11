@@ -21,7 +21,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -81,10 +80,13 @@ public class CalendarViewController {
         Color color;
         for (int i = 0; i < cellNumber; i++) {
             if (dayInMonth.getMonthValue() != labelDate.getMonthValue()) {
+                //灰色
                 color = Color.valueOf("#BEBEBE");
             } else if (dayInMonth.equals(LocalDate.now())) {
+                //浅蓝色
                 color = Color.valueOf("84C1FF");
             } else if (dayInMonth.equals(labelDate)) {
+                //红色
                 color = Color.valueOf("#FF5151");
             } else {
                 color = Color.WHITE;

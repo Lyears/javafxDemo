@@ -95,7 +95,7 @@ public class MainCalendarController {
         LinearGradient linearGrad = new LinearGradient(
                 0, 1, 1, 0,
                 true, CycleMethod.NO_CYCLE,
-                new Stop(0.001, Color.GRAY), new Stop(1.0, Color.WHITE)
+                new Stop(0.001, Color.valueOf("#BEBEBE")), new Stop(1.0, Color.WHITE)
         );
         BackgroundFill backgroundFill = new BackgroundFill(linearGrad, new CornerRadii(0.8), null);
         Background background = new Background(backgroundFill);
@@ -458,7 +458,7 @@ public class MainCalendarController {
                     if (isNewOperation) {
                         entities.add(entity);
                     } else {
-                        entities.set(entities.indexOf(o), entity);
+//                        entities.set(entities.indexOf(o), entity);
                     }
 //                    System.out.println(entities);
                 } catch (Exception e) {

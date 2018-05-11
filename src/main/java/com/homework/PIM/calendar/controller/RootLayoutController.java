@@ -60,6 +60,7 @@ public class RootLayoutController {
     @FXML
     private void handleSaveAs() {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("请选择文件");
 
         // 设置文件类型
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
