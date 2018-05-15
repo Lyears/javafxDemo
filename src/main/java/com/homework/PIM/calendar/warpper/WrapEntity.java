@@ -1,5 +1,6 @@
 package com.homework.PIM.calendar.warpper;
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -9,7 +10,7 @@ import java.util.Objects;
  * @author fzm
  * @date 2018/4/14
  **/
-public abstract class WrapEntity {
+public abstract class WrapEntity{
     private StringProperty priority;
 
     public WrapEntity() {

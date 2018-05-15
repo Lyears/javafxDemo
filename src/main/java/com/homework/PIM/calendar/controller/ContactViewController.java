@@ -47,6 +47,8 @@ public class ContactViewController {
         contactTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showContactDetails(newValue)
         );
+
+        contactTable.getStyleClass().add("table-view");
     }
 
     /**

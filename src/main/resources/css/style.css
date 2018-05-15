@@ -1,0 +1,50 @@
+.jfx-toggle-button,
+.jfx-toggle-button:armed,
+.jfx-toggle-button:hover,
+.jfx-toggle-button:focused,
+.jfx-toggle-button:selected,
+.jfx-toggle-button:focused:selected {
+    -fx-background-color: TRANSPARENT, TRANSPARENT, TRANSPARENT, TRANSPARENT;
+    -fx-background-radius: 3px;
+    -fx-background-insets: 0px;
+
+    -jfx-toggle-color: #0099ff;
+    -jfx-untoggle-color: #FAFAFA;
+    -jfx-toggle-line-color: #84c1ff;
+    -jfx-untoggle-line-color: #999999;
+}
+
+.jfx-toggle-button Line {
+    -fx-stroke: -jfx-untoggle-line-color;
+}
+.jfx-toggle-button:selected Line{
+    -fx-stroke: -jfx-toggle-line-color;
+}
+
+.jfx-toggle-button Circle{
+    -fx-fill: -jfx-untoggle-color;
+}
+
+.jfx-toggle-button:selected Circle{
+    -fx-fill: -jfx-toggle-color;
+}
+
+.jfx-toggle-button .jfx-rippler {
+    -jfx-rippler-fill: -jfx-untoggle-line-color;
+}
+
+.jfx-toggle-button:selected .jfx-rippler {
+    -jfx-rippler-fill: -jfx-toggle-line-color;
+}
+
+
+.button-raised{
+    /*-fx-padding: 0.7em 0.57em;*/
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+
+
+    -fx-background-color: #84c1ff;
+    -fx-text-fill: #0099ff;
+}
+

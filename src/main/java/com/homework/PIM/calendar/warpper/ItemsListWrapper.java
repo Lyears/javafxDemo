@@ -3,6 +3,7 @@ package com.homework.PIM.calendar.warpper;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author fzm
@@ -10,10 +11,19 @@ import java.util.List;
  **/
 @XmlRootElement(name = "items")
 public class ItemsListWrapper {
+    private Map<String,Object> privateInfoMap;
     private List<WrapAppointment> appointments;
     private List<WrapContact> contacts;
     private List<WrapTodo> todos;
     private List<WrapNote> notes;
+
+    public Map<String, Object> getPrivateInfoMap() {
+        return privateInfoMap;
+    }
+
+    public void setPrivateInfoMap(Map<String, Object> privateInfoMap) {
+        this.privateInfoMap = privateInfoMap;
+    }
 
     @XmlElement(name = "appointment")
     public List<WrapAppointment> getAppointments() {

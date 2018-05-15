@@ -7,7 +7,8 @@
 <?import javafx.scene.text.*?>
 <SplitPane dividerPositions="0.29797979797979796" prefHeight="670.0" prefWidth="1100.0" BorderPane.alignment="CENTER"
            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.homework.PIM.calendar.controller.ContactViewController">
+           fx:controller="com.homework.PIM.calendar.controller.ContactViewController"
+            stylesheets="@/css/tableView.css">
     <AnchorPane maxWidth="300.0" minHeight="0.0" minWidth="300.0" prefHeight="700.0" prefWidth="300.0">
         <TableView fx:id="contactTable" prefHeight="698.0" prefWidth="323.0" AnchorPane.bottomAnchor="20.0"
                    AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">

@@ -1,11 +1,8 @@
 package com.homework.PIM.calendar;
 
-import com.homework.PIM.Collection;
-import com.homework.PIM.PIMCollection;
 import com.homework.PIM.calendar.controller.MainCalendarController;
 import com.homework.PIM.calendar.controller.RootLayoutController;
 import com.homework.PIM.calendar.warpper.*;
-import com.homework.PIM.entity.*;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,8 +19,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -49,6 +45,8 @@ public class CalendarMainApp extends Application {
     private List<WrapNote> wrapNotes = new ArrayList<>();
     private List<WrapTodo> wrapTodos = new ArrayList<>();
     private List<WrapAppointment> wrapAppointments = new ArrayList<>();
+
+    private Map<String, Object> privateInfoMap = new HashMap<>(7);
 
     public CalendarMainApp() {
 //        loadEntities();
@@ -164,6 +162,7 @@ public class CalendarMainApp extends Application {
         appointments.clear();
         notes.clear();
 
+
         //检测每个包装集合是否为空，不为空则将其加载进入集合
         if (wrapper.getTodos() != null) {
             todos.addAll(wrapper.getTodos());
@@ -278,5 +277,13 @@ public class CalendarMainApp extends Application {
 
     public ObjectProperty<WrapEntity> selectedItemProperty() {
         return selectedItem;
+    }
+
+    public Map<String, Object> getPrivateInfoMap() {
+        return privateInfoMap;
+    }
+
+    public void setPrivateInfoMap(Map<String, Object> privateInfoMap) {
+        this.privateInfoMap = privateInfoMap;
     }
 }

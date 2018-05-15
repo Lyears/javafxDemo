@@ -37,6 +37,7 @@ public class NoteViewController {
         noteTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showNoteDetails(newValue)
         );
+        noteTable.getStyleClass().add("table-view");
     }
 
     public void showNoteDetails(WrapNote note) {

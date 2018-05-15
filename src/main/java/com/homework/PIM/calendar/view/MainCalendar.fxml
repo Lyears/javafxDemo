@@ -1,178 +1,243 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-
-<BorderPane layoutY="30.0" prefHeight="870.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.homework.PIM.calendar.controller.MainCalendarController">
+<?import javafx.scene.text.*?>
+<BorderPane layoutY="30.0" prefHeight="870.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8.0.121"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.homework.PIM.calendar.controller.MainCalendarController"
+            stylesheets="@/css/style.css">
     <left>
         <AnchorPane fx:id="leftPane" prefHeight="670.0" prefWidth="280.0">
             <effect>
-                <DropShadow />
+                <DropShadow/>
             </effect>
-           <children>
-   
-               <ToggleButton fx:id="calendarButton" layoutX="89.0" layoutY="14.0" mnemonicParsing="false" text="日历" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0">
-                   <graphic>
-                       <ImageView fitHeight="20" fitWidth="20">
-                          <image>
-                              <Image url="@/calendar.png" />
-                          </image>
-                       </ImageView>
-                   </graphic>
-               </ToggleButton>
-               <ToggleButton fx:id="contactButton" layoutX="89.0" layoutY="337.0" mnemonicParsing="false" text="联系人" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0">
-                   <graphic>
-                       <ImageView fitHeight="20" fitWidth="20">
-                          <image>
-      
-                              <Image url="@/contact.png" />
-                          </image>
-                       </ImageView>
-                   </graphic>
-               </ToggleButton>
-               <ToggleButton fx:id="noteButton" layoutX="89.0" layoutY="373.0" mnemonicParsing="false" text="笔记" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0">
-                   <graphic>
-                       <ImageView fitHeight="20" fitWidth="20">
-                          <image>
-      
-                              <Image url="@/note.png" />
-                          </image>
-                       </ImageView>
-                   </graphic>
-               </ToggleButton>
-               <DatePicker fx:id="datePicker" layoutX="43.0" layoutY="54.0" />
-           </children>
+            <children>
+                <JFXToggleButton fx:id="calendarButton" layoutX="89.0" layoutY="14.0" mnemonicParsing="false"
+                                 size="12.0" text="日历" AnchorPane.leftAnchor="70.0">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@/calendar.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </JFXToggleButton>
+                <JFXToggleButton fx:id="contactButton" layoutX="89.0" layoutY="337.0" mnemonicParsing="false"
+                                 size="12.0" text="联系人"
+                                 AnchorPane.leftAnchor="70.0">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+
+                                <Image url="@/contact.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXToggleButton>
+                <JFXToggleButton fx:id="noteButton" layoutX="89.0" layoutY="400.0" mnemonicParsing="false"
+                                 prefHeight="70.0" prefWidth="117.0" size="12.0" text="笔记"
+                                 AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="93.0">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+
+                                <Image url="@/note.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </JFXToggleButton>
+                <JFXDatePicker fx:id="datePicker" defaultColor="#84c1ff" layoutX="43.0" layoutY="71.0"
+                               showWeekNumbers="true"/>
+            </children>
         </AnchorPane>
     </left>
     <top>
         <AnchorPane prefHeight="170.0" prefWidth="200.0">
-           <children>
-   
-               <Pane prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10" BorderPane.alignment="CENTER">
-      <children>
-                      <Button fx:id="newAppointment" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#newAppointmentClick" prefHeight="120.0" prefWidth="85.0" text="新建约会">
-                          <graphic>
-                              <ImageView fitHeight="40" fitWidth="40">
-                                 <image>
-                                     <Image url="@/calendar.png" />
-                                 </image>
-                              </ImageView>
-                          </graphic>
-                      </Button>
-                      <Button fx:id="newNote" contentDisplay="TOP" layoutX="105.0" layoutY="10.0" mnemonicParsing="false" onAction="#newNoteClick" prefHeight="120.0" prefWidth="85.0" text="新建笔记">
-                          <graphic>
-                              <ImageView fitHeight="40" fitWidth="40">
-                                 <image>
-                                     <Image url="@/note.png" />
-                                 </image>
-                              </ImageView>
-                          </graphic>
-                      </Button>
-                      <Button fx:id="newTodo" alignment="CENTER" contentDisplay="TOP" layoutX="200.0" layoutY="10.0" mnemonicParsing="false" onAction="#newTodoClick" prefHeight="120.0" prefWidth="85.0" textOverrun="WORD_ELLIPSIS">
-                          <graphic>
-                              <ImageView fitHeight="40" fitWidth="40">
-                                  <image>
-                                      <Image url="@/todo.png" />
-                                  </image>
-                              </ImageView>
-                          </graphic>
-                          <text>新建项目</text>
-                      </Button>
-                      <Separator layoutX="390.0" maxWidth="1.0" minWidth="1.0" orientation="VERTICAL" prefHeight="160.0" prefWidth="1.0" />
-                      <Separator fx:id="separatorY" layoutY="160.0" prefWidth="1440.0" />
-                      <Button fx:id="todayButton" contentDisplay="TOP" layoutX="400.0" layoutY="10.0" mnemonicParsing="false" onAction="#todayButtonClick" prefHeight="120.0" prefWidth="85.0" text="今天">
-                          <graphic>
-                              <ImageView fitHeight="40" fitWidth="40">
-                                  <image>
-                                      <Image url="@/today.png" />
-                                  </image>
-                              </ImageView>
-                          </graphic>
-                      </Button>
-                      <Button fx:id="lateButton" contentDisplay="TOP" layoutX="495.0" layoutY="10.0" mnemonicParsing="false" onAction="#lateButtonClick" prefHeight="120.0" prefWidth="85.0" text="随后7天">
-                          <graphic>
-                              <ImageView fitHeight="40" fitWidth="40">
-                                  <image>
-                                      <Image url="@/backSeven.png" />
-                                  </image>
-                              </ImageView>
-                          </graphic>
-                      </Button>
-                      <Separator layoutX="780.0" maxWidth="1.0" minWidth="1.0" orientation="VERTICAL" prefHeight="160.0" prefWidth="6.0" />
-                      <Separator layoutX="980.0" maxWidth="1.0" minWidth="1.0" orientation="VERTICAL" prefHeight="160.0" prefWidth="6.0" />
-      </children>
-               </Pane>
-               <Button fx:id="newContact" alignment="CENTER" contentDisplay="TOP" layoutX="295.0" layoutY="10.0" mnemonicParsing="false" onAction="#newContactClick" prefHeight="120.0" prefWidth="85.0" text="新建联系人" textOverrun="WORD_ELLIPSIS">
-                   <graphic>
-                       <ImageView fitHeight="40" fitWidth="40">
-                           <image>
-                               <Image url="@/contact.png" />
-                           </image>
-                       </ImageView>
-                   </graphic>
-               </Button>
-               <Label alignment="CENTER" layoutX="545.0" layoutY="130.0" prefWidth="75.0" text="转到" textAlignment="CENTER" textOverrun="CLIP">
-                   <font>
-                       <Font size="18.0" />
-                   </font>
-               </Label>
-               <Label alignment="CENTER" layoutX="164.0" layoutY="135.0" prefWidth="75.0" text="新建" textAlignment="CENTER" textOverrun="CLIP">
-                   <font>
-                       <Font size="18.0" />
-                   </font>
-               </Label>
-               <Button fx:id="editButton" contentDisplay="TOP" layoutX="790.0" layoutY="10.0" mnemonicParsing="false" onAction="#editButtonClick" prefHeight="120.0" prefWidth="85.0" text="编辑">
-                   <graphic>
-                       <ImageView fitHeight="40" fitWidth="40">
-                           <image>
-                               <Image url="@/edit.png" />
-                           </image>
-                       </ImageView>
-                   </graphic>
-               </Button>
-               <Button fx:id="deleteButton" contentDisplay="TOP" layoutX="885.0" layoutY="10.0" mnemonicParsing="false" onAction="#deleteButtonClick" prefHeight="120.0" prefWidth="85.0" text="删除">
-                   <graphic>
-                       <ImageView fitHeight="40" fitWidth="40">
-                           <image>
-                               <Image url="@/delete.png" />
-                           </image>
-                       </ImageView>
-                   </graphic>
-               </Button>
-               <Label alignment="CENTER" layoutX="835.0" layoutY="130.0" prefWidth="75.0" text="选项" textAlignment="CENTER" textOverrun="CLIP">
-                   <font>
-                       <Font size="18.0" />
-                   </font>
-               </Label>
-            <Button fx:id="frontMonth" contentDisplay="TOP" layoutX="590.0" layoutY="10.0" mnemonicParsing="false" onAction="#frontMonthClick" prefHeight="120.0" prefWidth="85.0" text="前一个月">
-               <graphic>
-                  <ImageView fitHeight="40" fitWidth="40">
-                     <image>
-                        <Image url="@/frontMonth.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="lateMonth" contentDisplay="TOP" layoutX="685.0" layoutY="10.0" mnemonicParsing="false" onAction="#lateMonthClick" prefHeight="120.0" prefWidth="85.0" text="后一个月">
-               <graphic>
-                  <ImageView fitHeight="40" fitWidth="40">
-                     <image>
-                        <Image url="@/lateMonth.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-           </children>
+            <children>
+
+                <Pane prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="10" BorderPane.alignment="CENTER">
+                    <children>
+                        <JFXButton fx:id="newAppointment" buttonType="RAISED" contentDisplay="TOP" layoutX="10.0"
+                                   layoutY="10.0" mnemonicParsing="false" onAction="#newAppointmentClick"
+                                   prefHeight="120.0" prefWidth="85.0" text="新建约会">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/calendar.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="newNote" buttonType="RAISED" contentDisplay="TOP" layoutX="105.0"
+                                   layoutY="10.0" mnemonicParsing="false" onAction="#newNoteClick" prefHeight="120.0"
+                                   prefWidth="85.0" text="新建笔记">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/note.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="newTodo" alignment="CENTER" buttonType="RAISED" contentDisplay="TOP"
+                                   layoutX="200.0" layoutY="10.0" mnemonicParsing="false" onAction="#newTodoClick"
+                                   prefHeight="120.0" prefWidth="85.0" textOverrun="WORD_ELLIPSIS">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/todo.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <text>新建项目</text>
+                        </JFXButton>
+                        <Separator layoutX="390.0" maxWidth="1.0" minWidth="1.0" orientation="VERTICAL"
+                                   prefHeight="160.0" prefWidth="1.0"/>
+                        <Separator fx:id="separatorY" layoutY="160.0" prefWidth="1440.0"/>
+                        <JFXButton fx:id="todayButton" buttonType="RAISED" contentDisplay="TOP" layoutX="400.0"
+                                   layoutY="10.0" mnemonicParsing="false" onAction="#todayButtonClick"
+                                   prefHeight="120.0" prefWidth="85.0" text="今天">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/today.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="lateButton" buttonType="RAISED" contentDisplay="TOP" layoutX="495.0"
+                                   layoutY="10.0" mnemonicParsing="false" onAction="#lateButtonClick" prefHeight="120.0"
+                                   prefWidth="85.0" text="随后7天">
+                            <graphic>
+                                <ImageView fitHeight="40" fitWidth="40">
+                                    <image>
+                                        <Image url="@/backSeven.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </JFXButton>
+                        <Separator layoutX="780.0" maxWidth="1.0" minWidth="1.0" orientation="VERTICAL"
+                                   prefHeight="160.0" prefWidth="6.0"/>
+                        <Separator layoutX="980.0" maxWidth="1.0" minWidth="1.0" orientation="VERTICAL"
+                                   prefHeight="160.0" prefWidth="6.0"/>
+                    </children>
+                </Pane>
+                <JFXButton fx:id="newContact" alignment="CENTER" buttonType="RAISED" contentDisplay="TOP"
+                           layoutX="295.0" layoutY="10.0" mnemonicParsing="false" onAction="#newContactClick"
+                           prefHeight="120.0" prefWidth="85.0" text="新建联系人" textOverrun="WORD_ELLIPSIS">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/contact.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXButton>
+                <Label alignment="CENTER" layoutX="545.0" layoutY="130.0" prefWidth="75.0" text="转到"
+                       textAlignment="CENTER" textOverrun="CLIP">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <Label alignment="CENTER" layoutX="164.0" layoutY="135.0" prefWidth="75.0" text="新建"
+                       textAlignment="CENTER" textOverrun="CLIP">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <JFXButton fx:id="editButton" buttonType="RAISED" contentDisplay="TOP" layoutX="790.0" layoutY="10.0"
+                           mnemonicParsing="false" onAction="#editButtonClick" prefHeight="120.0" prefWidth="85.0"
+                           text="编辑">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/edit.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXButton>
+                <JFXButton fx:id="deleteButton" buttonType="RAISED" contentDisplay="TOP" layoutX="885.0" layoutY="10.0"
+                           mnemonicParsing="false" onAction="#deleteButtonClick" prefHeight="120.0" prefWidth="85.0"
+                           text="删除">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/delete.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXButton>
+                <Label alignment="CENTER" layoutX="835.0" layoutY="130.0" prefWidth="75.0" text="选项"
+                       textAlignment="CENTER" textOverrun="CLIP">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <JFXButton fx:id="frontMonth" buttonType="RAISED" contentDisplay="TOP" layoutX="590.0" layoutY="10.0"
+                           mnemonicParsing="false" onAction="#frontMonthClick" prefHeight="120.0" prefWidth="85.0"
+                           text="前一个月">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/frontMonth.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXButton>
+                <JFXButton fx:id="lateMonth" buttonType="RAISED" contentDisplay="TOP" layoutX="685.0" layoutY="10.0"
+                           mnemonicParsing="false" onAction="#lateMonthClick" prefHeight="120.0" prefWidth="85.0"
+                           text="后一个月">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/lateMonth.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXButton>
+                <JFXButton fx:id="loginAndLogoutButton" buttonType="RAISED" contentDisplay="TOP" layoutX="990.0"
+                           layoutY="10.0" mnemonicParsing="false" onAction="#loginAndLogOutButtonClick"
+                           prefHeight="120.0" prefWidth="85.0" text="登录">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/login.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXButton>
+                <JFXButton fx:id="createButton" buttonType="RAISED" contentDisplay="TOP" layoutX="1085.0" layoutY="10.0"
+                           mnemonicParsing="false" onAction="#editButtonClick" prefHeight="120.0" prefWidth="85.0"
+                           text="注册">
+                    <graphic>
+                        <ImageView fitHeight="40" fitWidth="40">
+                            <image>
+                                <Image url="@/create.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </JFXButton>
+                <Label alignment="CENTER" layoutX="1048.0" layoutY="130.0" prefWidth="75.0" text="用户"
+                       textAlignment="CENTER" textOverrun="CLIP">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+            </children>
         </AnchorPane>
     </top>
     <bottom>
-        <AnchorPane prefHeight="30.0" prefWidth="1440.0" BorderPane.alignment="CENTER" />
+        <AnchorPane prefHeight="30.0" prefWidth="1440.0" BorderPane.alignment="CENTER"/>
     </bottom>
 
 </BorderPane>

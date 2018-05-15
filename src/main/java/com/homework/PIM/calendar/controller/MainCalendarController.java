@@ -3,18 +3,20 @@ package com.homework.PIM.calendar.controller;
 import com.homework.PIM.calendar.CalendarMainApp;
 import com.homework.PIM.calendar.warpper.*;
 import com.homework.PIM.entity.*;
+import com.jfoenix.controls.*;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.AccessibleRole;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -26,6 +28,7 @@ import javafx.stage.Stage;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * @author fzm
@@ -33,27 +36,31 @@ import java.time.format.DateTimeFormatter;
  **/
 public class MainCalendarController {
 
-    public Button newAppointment;
-    public Button newTodo;
-    public Button newNote;
-    public Button newContact;
-    public Button todayButton;
-    public Button lateButton;
-    public Button frontMonth;
-    public Button lateMonth;
-    public Button editButton;
-    public Button deleteButton;
+    public JFXButton newAppointment;
+    public JFXButton newTodo;
+    public JFXButton newNote;
+    public JFXButton newContact;
+    public JFXButton todayButton;
+    public JFXButton lateButton;
+    public JFXButton frontMonth;
+    public JFXButton lateMonth;
+    public JFXButton editButton;
+    public JFXButton deleteButton;
+    public JFXButton loginAndLogoutButton;
+    public JFXButton createButton;
 
     public Separator separatorY;
     public AnchorPane leftPane;
 
-    public ToggleButton calendarButton;
-    public ToggleButton noteButton;
-    public ToggleButton contactButton;
+    public JFXToggleButton calendarButton;
+    public JFXToggleButton noteButton;
+    public JFXToggleButton contactButton;
 
-    public DatePicker datePicker;
+    public JFXDatePicker datePicker;
     private DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private StringBinding stringBinding = null;
+
+    private BooleanProperty isLogin = new SimpleBooleanProperty(false);
     @FXML
     private ContactViewController contactViewController;
     @FXML
@@ -66,7 +73,6 @@ public class MainCalendarController {
         //设置水平分割线的模糊效果
         separatorY.setEffect(new DropShadow(5, 6, 4, Color.BLACK));
         //设置时间选择器显示星期和将初始值设为当前时间
-        datePicker.setShowWeekNumbers(true);
         datePicker.setValue(LocalDate.now());
         ObjectProperty<LocalDate> datePickerProperty = datePicker.valueProperty();
         //设置日历显示时间标签的输出格式
@@ -80,6 +86,23 @@ public class MainCalendarController {
                 return datePickerProperty.get().getYear() + "年" + datePickerProperty.get().getMonthValue() + "月";
             }
         };
+        isLogin.addListener(
+                (observe, oldValue, newValue)->{
+                    ImageView imageView = new ImageView();
+                    imageView.setFitWidth(40);
+                    imageView.setFitHeight(40);
+                    if (newValue.equals(true)){
+                        loginAndLogoutButton.setText("注销");
+                        imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("logout.png")));
+                        loginAndLogoutButton.setGraphic(imageView);
+
+                    }else{
+                        loginAndLogoutButton.setText("登录");
+                        imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("login.png")));
+                        loginAndLogoutButton.setGraphic(imageView);
+                    }
+                }
+        );
 
         setLeftPaneLinearGradient();
 
@@ -108,8 +131,10 @@ public class MainCalendarController {
     public void setToggleButtonGroup() {
         ToggleGroup group = new ToggleGroup();
         calendarButton.setToggleGroup(group);
-        calendarButton.setUserData("CalendarView");
         calendarButton.setSelected(true);
+
+
+        calendarButton.setUserData("CalendarView");
 
         noteButton.setToggleGroup(group);
         noteButton.setUserData("NoteView");
@@ -180,7 +205,7 @@ public class MainCalendarController {
 
 
     public void newTodoClick(ActionEvent event) throws Exception {
-        AlertBox alertBox = new AlertBox();
+        ChangeAlertBox alertBox = new ChangeAlertBox();
         alertBox.display("新建项目", PIMTodo.class);
         boolean isOKClick = alertBox.okClicked;
         if (isOKClick) {
@@ -189,7 +214,7 @@ public class MainCalendarController {
     }
 
     public void newAppointmentClick(ActionEvent event) throws Exception {
-        AlertBox alertBox = new AlertBox();
+        ChangeAlertBox alertBox = new ChangeAlertBox();
         alertBox.display("新建约会", PIMAppointment.class);
         boolean isOKClick = alertBox.okClicked;
         if (isOKClick) {
@@ -198,7 +223,7 @@ public class MainCalendarController {
     }
 
     public void newNoteClick(ActionEvent event) throws Exception {
-        AlertBox alertBox = new AlertBox();
+        ChangeAlertBox alertBox = new ChangeAlertBox();
         alertBox.display("新建笔记", PIMNote.class);
         boolean isOkClick = alertBox.okClicked;
         if (isOkClick) {
@@ -207,7 +232,7 @@ public class MainCalendarController {
     }
 
     public void newContactClick(ActionEvent event) throws Exception {
-        AlertBox alertBox = new AlertBox();
+        ChangeAlertBox alertBox = new ChangeAlertBox();
         alertBox.display("新建联系人", PIMContact.class);
         //将新建立的联系人添加到联系人集合
         boolean isOkClick = alertBox.okClicked;
@@ -257,7 +282,7 @@ public class MainCalendarController {
 
     private void edit(WrapTodo wrapTodo, ObservableList<WrapTodo> todos) {
         try {
-            AlertBox alertBox = new AlertBox();
+            ChangeAlertBox alertBox = new ChangeAlertBox();
             int index = todos.indexOf(wrapTodo);
             alertBox.display("编辑项目", PIMTodo.class, wrapTodo.unWrap());
             boolean okClick = alertBox.isOkClicked();
@@ -273,7 +298,7 @@ public class MainCalendarController {
 
     private void edit(WrapAppointment wrapAppointment, ObservableList<WrapAppointment> appointments) {
         try {
-            AlertBox alertBox = new AlertBox();
+            ChangeAlertBox alertBox = new ChangeAlertBox();
             int index = appointments.indexOf(wrapAppointment);
             alertBox.display("编辑项目", PIMAppointment.class, wrapAppointment.unWrap());
             boolean okClick = alertBox.isOkClicked();
@@ -289,7 +314,7 @@ public class MainCalendarController {
 
     private void edit(WrapContact selectedContact, ContactViewController contactViewController) {
         try {
-            AlertBox alertBox = new AlertBox();
+            ChangeAlertBox alertBox = new ChangeAlertBox();
             ObservableList<WrapContact> contacts = mainApp.getContacts();
             int index = contacts.indexOf(selectedContact);
             alertBox.display("编辑联系人", PIMContact.class, selectedContact.unWrap());
@@ -309,7 +334,7 @@ public class MainCalendarController {
 
     private void edit(WrapNote selectedNote, NoteViewController noteViewController) {
         try {
-            AlertBox alertBox = new AlertBox();
+            ChangeAlertBox alertBox = new ChangeAlertBox();
             ObservableList<WrapNote> notes = mainApp.getNotes();
             int index = notes.indexOf(selectedNote);
             alertBox.display("编辑笔记", PIMNote.class, selectedNote.unWrap());
@@ -363,6 +388,11 @@ public class MainCalendarController {
         noteViewController.noteTable.getItems().remove(selectedIndex);
     }
 
+    private UserAlertBox userAlertBox = new UserAlertBox();
+    public void loginAndLogOutButtonClick(ActionEvent event){
+        userAlertBox.loginAndLogout();
+    }
+
 
     public CalendarMainApp getMainApp() {
         return mainApp;
@@ -381,7 +411,7 @@ public class MainCalendarController {
         return stringBinding;
     }
 
-    public class AlertBox {
+    public class ChangeAlertBox {
 
         PIMEntity entity = null;
         private boolean okClicked = false;
@@ -415,9 +445,17 @@ public class MainCalendarController {
             window.setMinWidth(450);
             window.setMaxWidth(450);
 
-            Button closeButton = new Button("关闭");
+            JFXButton closeButton = new JFXButton("关闭");
+            closeButton.getStyleClass().add("button-raised");
+            closeButton.setPrefSize(45d,30d);
+            closeButton.setMaxSize(45d,30d);
+            closeButton.setMinSize(45d,30d);
             closeButton.setCancelButton(true);
-            Button submitButton = new Button("提交");
+            JFXButton submitButton = new JFXButton("提交");
+            submitButton.getStyleClass().add("button-raised");
+            submitButton.setPrefSize(45d,30d);
+            submitButton.setMaxSize(45d,30d);
+            submitButton.setMinSize(45d,30d);
             submitButton.setDefaultButton(true);
 
             closeButton.setOnAction(event -> window.close());
@@ -453,7 +491,7 @@ public class MainCalendarController {
             vBox.setAlignment(Pos.CENTER);
 
 
-            TextField[] textFields = new TextField[clazz.getDeclaredFields().length];
+            JFXTextField[] textFields = new JFXTextField[clazz.getDeclaredFields().length];
 
             Class realClazz = null;
             Field realText;
@@ -463,7 +501,8 @@ public class MainCalendarController {
             int i = 0;
             for (Field text : clazz.getDeclaredFields()) {
                 Label label = new Label(text.getName() + ": ");
-                textFields[i] = new TextField();
+                textFields[i] = new JFXTextField();
+                textFields[i].setFocusColor(Color.valueOf("#0099ff"));
                 //如果传入的对象不为空，将文本框内的值预设为传入的对象对应的值
                 if (o != null) {
                     realText = realClazz.getDeclaredFields()[i];
@@ -480,8 +519,8 @@ public class MainCalendarController {
 
                 AnchorPane anchorPane = new AnchorPane();
                 anchorPane.getChildren().addAll(label, textFields[i]);
-                AnchorPane.setLeftAnchor(label, 60d);
-                AnchorPane.setRightAnchor(textFields[i], 60d);
+                AnchorPane.setLeftAnchor(label, 100d);
+                AnchorPane.setRightAnchor(textFields[i], 100d);
 
                 vBox.getChildren().add(anchorPane);
                 i = i + 1;
@@ -491,6 +530,7 @@ public class MainCalendarController {
             HBox hBox = new HBox(10);
             hBox.setAlignment(Pos.CENTER);
             hBox.getChildren().addAll(submitButton, closeButton);
+            vBox.getStylesheets().add(Objects.requireNonNull(getClass().getClassLoader().getResource("css/style.css")).toExternalForm());
             vBox.getChildren().add(hBox);
 
             Scene scene = new Scene(vBox);
@@ -500,6 +540,91 @@ public class MainCalendarController {
         }
 
     }
+
+    private class UserAlertBox{
+
+        private void loginAndLogout(){
+            if (isLogin.get()){
+                isLogin.set(false);
+            }else {
+                if (login()) {
+                    isLogin.set(true);
+                }
+            }
+        }
+
+        private boolean login(){
+            boolean validation = false;
+            Stage window = new Stage();
+            window.setTitle("登录");
+            window.initModality(Modality.APPLICATION_MODAL);
+            window.setMinHeight(300);
+            window.setMaxHeight(300);
+            window.setMinWidth(450);
+            window.setMaxWidth(450);
+
+            JFXButton closeButton = new JFXButton("关闭");
+            closeButton.getStyleClass().add("button-raised");
+            closeButton.setPrefSize(45d,30d);
+            closeButton.setMaxSize(45d,30d);
+            closeButton.setMinSize(45d,30d);
+            closeButton.setCancelButton(true);
+            JFXButton submitButton = new JFXButton("提交");
+            submitButton.getStyleClass().add("button-raised");
+            submitButton.setPrefSize(45d,30d);
+            submitButton.setMaxSize(45d,30d);
+            submitButton.setMinSize(45d,30d);
+            submitButton.setDefaultButton(true);
+
+
+            VBox vBox = new VBox(15);
+            vBox.setAlignment(Pos.CENTER);
+
+            vBox.getStylesheets().add(Objects.requireNonNull(getClass().getClassLoader().getResource("css/style.css")).toExternalForm());
+
+            Label userLabel = new Label("用户名: ");
+            JFXTextField userName = new JFXTextField();
+            userName.setFocusColor(Color.valueOf("#0099ff"));
+
+            userName.setPromptText("请输入用户名");
+            AnchorPane anchorPane = new AnchorPane();
+            anchorPane.getChildren().addAll(userLabel,userName);
+            AnchorPane.setLeftAnchor(userLabel, 100d);
+            AnchorPane.setRightAnchor(userName, 100d);
+            vBox.getChildren().add(anchorPane);
+
+            Label passwordLabel = new Label("密码: ");
+            JFXPasswordField password = new JFXPasswordField();
+            password.setFocusColor(Color.valueOf("#0099ff"));
+
+
+            password.setPromptText("请输入密码");
+            anchorPane = new AnchorPane();
+            anchorPane.getChildren().addAll(passwordLabel,password);
+            AnchorPane.setLeftAnchor(passwordLabel,100d);
+            AnchorPane.setRightAnchor(password,100d);
+            vBox.getChildren().add(anchorPane);
+
+
+            HBox hBox = new HBox(10);
+            hBox.setAlignment(Pos.CENTER);
+            hBox.getChildren().addAll(submitButton, closeButton);
+            vBox.getChildren().add(hBox);
+
+            closeButton.setOnAction(event -> window.close());
+            submitButton.setOnAction(
+                    event -> {
+
+                    }
+            );
+            Scene scene = new Scene(vBox);
+            window.setScene(scene);
+            window.showAndWait();
+
+            return false;
+        }
+    }
+
 
 
 }

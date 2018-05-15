@@ -161,7 +161,7 @@ public class CalendarViewController {
                 Label appointmentText = new Label("约会: " + appointment.getPriority() + "," + appointment.getDescription());
                 appointmentText.setWrapText(true);
                 //设置浅蓝色背景和圆角
-                appointmentText.setBackground(new Background(new BackgroundFill(Color.valueOf("0099FF"), new CornerRadii(6d), null)));
+                appointmentText.setBackground(new Background(new BackgroundFill(Color.valueOf("#0099FF"), new CornerRadii(6d), null)));
                 //
                 appointmentText.setOnMousePressed(new MouseSelectedEvent(appointmentText, appointment));
                 labelSelectMap.put(appointmentText, appointment);
@@ -233,14 +233,13 @@ public class CalendarViewController {
         mainApp.selectedItemProperty().addListener(
                 (observe, oldValue, newValue) -> labelSelectMap.forEach(
                         (k, v) -> {
-                            //每当选中的项目被修改时，将其他的样式清楚
+                            //每当选中的项目被修改时，将其他的样式清除
                             if (!v.equals(newValue)) {
                                 k.setEffect(null);
                             }
                         }
                 )
         );
-
     }
 
     /**
