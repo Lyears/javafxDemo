@@ -1,5 +1,7 @@
 package com.homework.PIM;
 
+import com.homework.PIM.collection.Collection;
+import com.homework.PIM.collection.PIMCollectionImp;
 import com.homework.PIM.entity.*;
 
 import java.io.*;
@@ -19,7 +21,7 @@ public class PIMManager {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         boolean running = true;
-        Collection<PIMEntity> pimEntities = new PIMCollection<>();
+        Collection<PIMEntity> pimEntities = new PIMCollectionImp<>();
         while (running) {
             String in;
             System.out.println("---Enter a command (suported commands are List Create Save Load Quit)---");

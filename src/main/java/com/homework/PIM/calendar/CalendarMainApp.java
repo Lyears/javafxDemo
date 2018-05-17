@@ -3,9 +3,7 @@ package com.homework.PIM.calendar;
 import com.homework.PIM.calendar.controller.MainCalendarController;
 import com.homework.PIM.calendar.controller.RootLayoutController;
 import com.homework.PIM.calendar.warpper.*;
-import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXSpinner;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,11 +12,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -106,19 +101,18 @@ public class CalendarMainApp extends Application {
         //为loginUser添加监视器
         loginUser.addListener(
                 (observable, oldValue, newValue) -> {
+                    //注销则全部清空
                     if (newValue == null) {
                         contacts.clear();
+                        notes.clear();
                         todos.clear();
                         appointments.clear();
-                        notes.clear();
                     } else {
                         //打开加载在注册表中的配置
-                        File file = getPersonFilePath();
-                        if (file != null) {
+                        if (newValue.getFilePath() != null) {
                             try {
-                                loadPersonDataFromFile(file);
+                                loadPersonDataFromFile(new File(newValue.getFilePath()));
                             } catch (Exception e) {
-                                // TODO: 2018/5/17 fail to load, use dailog 
                                 e.printStackTrace();
                             }
                         }
@@ -140,28 +134,58 @@ public class CalendarMainApp extends Application {
         //加载日历视图
         mainCalendarController.setCenterPane("CalendarView", this);
         //为每个更改和删除操作添加监听
-        todos.addListener((ListChangeListener<WrapTodo>) c -> mainCalendarController.setCenterPane("CalendarView", this));
-        appointments.addListener((ListChangeListener<WrapAppointment>) c -> mainCalendarController.setCenterPane("CalendarView", this));
+        notes.addListener((ListChangeListener<WrapNote>) c -> {
+            mainCalendarController.noteButton.setSelected(false);
+            mainCalendarController.noteButton.setSelected(true);
+        });
+        contacts.addListener((ListChangeListener<WrapContact>) c -> {
+            mainCalendarController.contactButton.setSelected(false);
+            mainCalendarController.contactButton.setSelected(true);
+        });
+        todos.addListener((ListChangeListener<WrapTodo>) c -> {
+            mainCalendarController.calendarButton.setSelected(false);
+            mainCalendarController.calendarButton.setSelected(true);
+        });
+        appointments.addListener((ListChangeListener<WrapAppointment>) c -> {
+            mainCalendarController.calendarButton.setSelected(false);
+            mainCalendarController.calendarButton.setSelected(true);
+        });
 
         mainCalendarController.datePicker.valueProperty().addListener(
                 (observable, oldValue, newValue) -> mainCalendarController.setCenterPane("CalendarView", this)
         );
     }
 
+    /**
+     * 得到保存在个人信息中的持久化文件路径
+     *
+     * @return 返回持久化文件，如没有则返回空
+     */
     public File getPersonFilePath() {
-        if (loginUser.get() == null){
+        if (loginUser.get() == null) {
             return null;
-        }else {
+        } else {
             Preferences prefs = Preferences.userNodeForPackage(getClass());
-            String filePath = new JSONObject(prefs.get(loginUser.get().getUserName(), null)).getString("filePath");
-            if (filePath != null) {
-                return new File(filePath);
+            if (loginUser.get().getFilePath() != null) {
+                String filePath = new JSONObject(prefs.get(loginUser.get().getUserName(), null)).getString("filePath");
+                if (filePath != null) {
+                    return new File(filePath);
+                } else {
+                    return null;
+                }
             } else {
+                waringDialog("您还没有选择文件，请选择文件！");
                 return null;
             }
         }
     }
 
+
+    /**
+     * 设置持久化文件路径，同时改变标题
+     *
+     * @param file 持久化文件
+     */
     public void setPersonFilePath(File file) {
         Preferences prefs = Preferences.userNodeForPackage(getClass());
         if (file != null) {
@@ -170,29 +194,41 @@ public class CalendarMainApp extends Application {
             prefs.put(loginUser.get().getUserName(), userObject.toString());
 
             // 更新标题
-            primaryStage.setTitle("日历-个人管理系统 - "+loginUser.get().getUserName()+ " - " + file.getName());
+            primaryStage.setTitle("日历-个人管理系统 - " + loginUser.get().getUserName() + " - " + file.getName());
         } else {
             prefs.remove("filePath");
             primaryStage.setTitle("日历-个人管理系统");
         }
     }
 
+    /**
+     * 根据name从注册表中得到User信息
+     *
+     * @param name 姓名
+     * @return User对象
+     */
     public User getUserInfo(String name) {
         Preferences prefs = Preferences.userNodeForPackage(getClass());
-        String userJSON = prefs.get(name,null);
+        String userJSON = prefs.get(name, null);
         if (userJSON != null) {
             JSONObject userObject = new JSONObject(prefs.get(name, null));
             String password = userObject.getString("password");
+            String filePath = userObject.getString("filePath");
             if (password != null) {
-                return new User(name, password);
+                return new User(name, password, filePath);
             } else {
                 return null;
             }
-        }else {
+        } else {
             return null;
         }
     }
 
+    /**
+     * 设置User信息到注册表
+     *
+     * @param userInfo User信息
+     */
     public void setUserInfo(User userInfo) {
         Preferences prefs = Preferences.userNodeForPackage(getClass());
         Objects.requireNonNull(userInfo);
@@ -220,17 +256,17 @@ public class CalendarMainApp extends Application {
 
 
         //检测每个包装集合是否为空，不为空则将其加载进入集合
-        if (wrapper.getTodos() != null) {
-            todos.addAll(wrapper.getTodos());
-        }
-        if (wrapper.getAppointments() != null) {
-            appointments.addAll(wrapper.getAppointments());
-        }
         if (wrapper.getNotes() != null) {
             notes.addAll(wrapper.getNotes());
         }
         if (wrapper.getContacts() != null) {
             contacts.addAll(wrapper.getContacts());
+        }
+        if (wrapper.getTodos() != null) {
+            todos.addAll(wrapper.getTodos());
+        }
+        if (wrapper.getAppointments() != null) {
+            appointments.addAll(wrapper.getAppointments());
         }
         // 保存文件配置进入注册表
         setPersonFilePath(file);
@@ -243,9 +279,9 @@ public class CalendarMainApp extends Application {
      * @param file 选择文件
      */
     public void savePersonDataToFile(File file) {
-        if (loginUser.get() == null){
-            waringDialog();
-        }else {
+        if (loginUser.get() == null) {
+            waringDialog("您还没有登录，请先登录！");
+        } else {
             try {
                 JAXBContext context = JAXBContext
                         .newInstance(ItemsListWrapper.class);
@@ -278,7 +314,10 @@ public class CalendarMainApp extends Application {
         }
     }
 
-    private void waringDialog(){
+    /**
+     * 弹出警告窗口
+     */
+    private void waringDialog(String message) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         StackPane paneDialog = new StackPane();
@@ -286,13 +325,13 @@ public class CalendarMainApp extends Application {
         JFXDialog dialog = new JFXDialog();
         dialog.setDialogContainer(paneDialog);
         dialog.setOverlayClose(false);
-        dialog.setContent(new Label("您还没有登录，请先登录！"));
+        dialog.setContent(new Label(message));
 
         final Scene scene = new Scene(paneDialog, 200, 50);
         stage.setScene(scene);
         stage.setTitle("警告");
         dialog.show();
-        stage.show();
+        stage.showAndWait();
     }
 
     public BorderPane getCalendarMainView() {
@@ -367,11 +406,11 @@ public class CalendarMainApp extends Application {
         return loginUser.get();
     }
 
-    public ObjectProperty<User> loginUserProperty() {
-        return loginUser;
-    }
-
     public void setLoginUser(User loginUser) {
         this.loginUser.set(loginUser);
+    }
+
+    public ObjectProperty<User> loginUserProperty() {
+        return loginUser;
     }
 }

@@ -138,9 +138,6 @@ public class MainCalendarController {
     public void setToggleButtonGroup() {
         ToggleGroup group = new ToggleGroup();
         calendarButton.setToggleGroup(group);
-        calendarButton.setSelected(true);
-
-
         calendarButton.setUserData("CalendarView");
 
         noteButton.setToggleGroup(group);
@@ -148,6 +145,8 @@ public class MainCalendarController {
 
         contactButton.setToggleGroup(group);
         contactButton.setUserData("ContactView");
+
+        calendarButton.setSelected(true);
 
         group.selectedToggleProperty().addListener(
                 (observable, oldValue, newValue) -> {
@@ -560,7 +559,7 @@ public class MainCalendarController {
 
         private void loginAndLogout() {
             if (isLogin.get()) {
-                //
+                //注销登录对象
                 mainApp.setLoginUser(null);
                 loginUserLabel.setText("当前登录用户: ");
                 loginTimeLabel.setText("本次登录时间: ");
@@ -572,36 +571,29 @@ public class MainCalendarController {
             }
         }
 
-        private void createUser() {
-            create();
-        }
-
         private boolean login() {
             boolean validation = false;
             okClick = false;
             Stage window = new Stage();
             window.setTitle("登录");
-            LoginDisplay();
+            loginDisplay();
             if (okClick){
                 validation = true;
             }
-
             return validation;
         }
 
-        private void create() {
-
-
+        private void createUser() {
             User user = new User();
             okClick = false;
-            CreateDisplay(user);
+            createDisplay(user);
             if (okClick){
+                user.setFilePath(null);
                 mainApp.setUserInfo(user);
             }
-
         }
 
-        private void LoginDisplay(){
+        private void loginDisplay(){
             Stage window = new Stage();
             window.setTitle("登录");
             window.initModality(Modality.APPLICATION_MODAL);
@@ -682,7 +674,7 @@ public class MainCalendarController {
             window.showAndWait();
         }
 
-        private void CreateDisplay(User user) {
+        private void createDisplay(User user) {
             Stage window = new Stage();
             window.setTitle("注册");
             window.initModality(Modality.APPLICATION_MODAL);

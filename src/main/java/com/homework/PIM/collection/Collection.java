@@ -1,4 +1,4 @@
-package com.homework.PIM;
+package com.homework.PIM.collection;
 
 import java.time.LocalDate;
 import java.util.List;
