@@ -66,7 +66,7 @@
 
 .table-row-cell > .disclosure-node > .arrow {
     -fx-background-color: -fx-text-fill;
-    -fx-padding: 0.333333em 0.229em 0.333333em 0.229em; /* 4 */
+    -fx-padding: 0.233333em 0.129em 0.233333em 0.129em; /* 4 */
     -fx-shape: "M 0 -3.5 L 4 0 L 0 3.5 z";
 }
 

@@ -72,7 +72,7 @@
                     </font>
                     <graphic>
                         <ImageView fitHeight="24" fitWidth="24">
-                            <Image url="@/calendar.png"/>
+                            <Image url="@/picture/calendar.png"/>
                         </ImageView>
                     </graphic>
                 </Label>

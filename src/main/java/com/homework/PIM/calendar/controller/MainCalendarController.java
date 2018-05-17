@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -99,12 +100,12 @@ public class MainCalendarController {
                     imageView.setFitHeight(40);
                     if (newValue.equals(true)) {
                         loginAndLogoutButton.setText("注销");
-                        imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("logout.png")));
+                        imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("picture/logout.png")));
                         loginAndLogoutButton.setGraphic(imageView);
 
                     } else {
                         loginAndLogoutButton.setText("登录");
-                        imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("login.png")));
+                        imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("picture/login.png")));
                         loginAndLogoutButton.setGraphic(imageView);
                     }
                 }
@@ -560,6 +561,9 @@ public class MainCalendarController {
         private void loginAndLogout() {
             if (isLogin.get()) {
                 //
+                mainApp.setLoginUser(null);
+                loginUserLabel.setText("当前登录用户: ");
+                loginTimeLabel.setText("本次登录时间: ");
                 isLogin.set(false);
             } else {
                 if (login()) {
@@ -574,35 +578,113 @@ public class MainCalendarController {
 
         private boolean login() {
             boolean validation = false;
+            okClick = false;
             Stage window = new Stage();
             window.setTitle("登录");
-            User user = new User();
-            final boolean isCreate = false;
-            display(window, user,isCreate);
+            LoginDisplay();
             if (okClick){
                 validation = true;
-                window.close();
             }
-            window.showAndWait();
+
             return validation;
         }
 
         private void create() {
-            Stage window = new Stage();
-            window.setTitle("注册");
+
+
             User user = new User();
-            final boolean isCreate = true;
             okClick = false;
-            display(window, user, isCreate);
+            CreateDisplay(user);
             if (okClick){
                 mainApp.setUserInfo(user);
-                window.close();
             }
+
+        }
+
+        private void LoginDisplay(){
+            Stage window = new Stage();
+            window.setTitle("登录");
+            window.initModality(Modality.APPLICATION_MODAL);
+            window.setMinHeight(300);
+            window.setMaxHeight(300);
+            window.setMinWidth(450);
+            window.setMaxWidth(450);
+
+            JFXButton closeButton = new JFXButton("关闭");
+            closeButton.getStyleClass().add("button-raised");
+            closeButton.setPrefSize(45d, 30d);
+            closeButton.setMaxSize(45d, 30d);
+            closeButton.setMinSize(45d, 30d);
+            closeButton.setCancelButton(true);
+            JFXButton submitButton = new JFXButton("提交");
+            submitButton.getStyleClass().add("button-raised");
+            submitButton.setPrefSize(45d, 30d);
+            submitButton.setMaxSize(45d, 30d);
+            submitButton.setMinSize(45d, 30d);
+            submitButton.setDefaultButton(true);
+
+
+            VBox vBox = new VBox(15);
+            vBox.setAlignment(Pos.CENTER);
+
+            vBox.getStylesheets().add(Objects.requireNonNull(getClass().getClassLoader().getResource("css/style.css")).toExternalForm());
+
+            Label userLabel = new Label("用户名: ");
+            userLabel.getStyleClass().add("fx-label");
+            JFXTextField userNameField = new JFXTextField();
+            userNameField.setFocusColor(Color.valueOf("#0099ff"));
+
+            userNameField.setPromptText("请输入用户名");
+            AnchorPane anchorPane = new AnchorPane();
+            anchorPane.getChildren().addAll(userLabel, userNameField);
+            AnchorPane.setLeftAnchor(userLabel, 100d);
+            AnchorPane.setRightAnchor(userNameField, 100d);
+            vBox.getChildren().add(anchorPane);
+
+            Label passwordLabel = new Label("密码: ");
+            passwordLabel.getStyleClass().add("fx-label");
+            JFXPasswordField passwordField = new JFXPasswordField();
+            passwordField.setFocusColor(Color.valueOf("#0099ff"));
+
+
+            passwordField.setPromptText("请输入密码");
+            anchorPane = new AnchorPane();
+            anchorPane.getChildren().addAll(passwordLabel, passwordField);
+            AnchorPane.setLeftAnchor(passwordLabel, 100d);
+            AnchorPane.setRightAnchor(passwordField, 100d);
+            vBox.getChildren().add(anchorPane);
+
+
+            HBox hBox = new HBox(10);
+            hBox.setAlignment(Pos.CENTER);
+            hBox.getChildren().addAll(submitButton, closeButton);
+            vBox.getChildren().add(hBox);
+
+            closeButton.setOnAction(event -> window.close());
+            submitButton.setOnAction(event -> {
+                User existUser = mainApp.getUserInfo(userNameField.getText());
+                if (existUser != null){
+                    if (existUser.getPassword().equals(passwordField.getText())){
+                        okClick = true;
+                        loginUserLabel.setText("当前登录用户: " + userNameField.getText());
+                        loginTimeLabel.setText("本次登录时间: " + LocalTime.now().withNano(0).toString());
+                        mainApp.setLoginUser(existUser);
+                        window.close();
+                    }else {
+                        // TODO: 2018/5/17 fail to login
+                    }
+                }else {
+                    // TODO: 2018/5/17 no user
+                }
+            });
+            Scene scene = new Scene(vBox);
+            window.setScene(scene);
             window.showAndWait();
         }
 
-        private void display(Stage window, User user, boolean isCreate) {
-
+        private void CreateDisplay(User user) {
+            Stage window = new Stage();
+            window.setTitle("注册");
             window.initModality(Modality.APPLICATION_MODAL);
             window.setMinHeight(300);
             window.setMaxHeight(300);
@@ -662,28 +744,19 @@ public class MainCalendarController {
             closeButton.setOnAction(event -> window.close());
             submitButton.setOnAction(
                     event -> {
-                        User existUser = mainApp.getUserInfo(userNameField.getText());
-
-                        if (isCreate) {
-                            if (existUser == null) {
+                            if (mainApp.getUserInfo(userNameField.getText()) == null) {
                                 user.setUserName(userNameField.getText());
                                 user.setPassword(passwordField.getText());
                                 okClick = true;
+                                window.close();
                             } else {
                                 // TODO: 2018/5/16  fail to create
                             }
-                        } else {
-                            if (existUser != null) {
-                                if (existUser.getPassword().equals(passwordField.getText())){
-                                    okClick = true;
-                                }
-                            }
-                        }
                     }
             );
             Scene scene = new Scene(vBox);
             window.setScene(scene);
-
+            window.showAndWait();
         }
     }
 

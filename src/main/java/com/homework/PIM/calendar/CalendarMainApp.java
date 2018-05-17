@@ -47,6 +47,7 @@ public class CalendarMainApp extends Application {
     private List<WrapAppointment> wrapAppointments = new ArrayList<>();
 
     private Map<String, Object> privateInfoMap = new HashMap<>(7);
+    private ObjectProperty<User> loginUser = new SimpleObjectProperty<>();
 
     public CalendarMainApp() {
 //        loadEntities();
@@ -91,12 +92,29 @@ public class CalendarMainApp extends Application {
         Scene scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        //首先打开加载在注册表中的配置
-        File file = getPersonFilePath();
-        if (file != null) {
-            loadPersonDataFromFile(file);
-        }
+        
+        //为loginUser添加监视器
+        loginUser.addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue == null){
+                        contacts.clear();
+                        todos.clear();
+                        appointments.clear();
+                        notes.clear();
+                    }else{
+                        //首先打开加载在注册表中的配置
+                        File file = getPersonFilePath();
+                        if (file != null) {
+                            try {
+                                loadPersonDataFromFile(file);
+                            } catch (Exception e) {
+                                // TODO: 2018/5/17 fail to load, use dailog 
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     private void initCalendar() throws Exception {
@@ -301,5 +319,17 @@ public class CalendarMainApp extends Application {
 
     public void setPrivateInfoMap(Map<String, Object> privateInfoMap) {
         this.privateInfoMap = privateInfoMap;
+    }
+
+    public User getLoginUser() {
+        return loginUser.get();
+    }
+
+    public ObjectProperty<User> loginUserProperty() {
+        return loginUser;
+    }
+
+    public void setLoginUser(User loginUser) {
+        this.loginUser.set(loginUser);
     }
 }

@@ -11,7 +11,8 @@
             stylesheets="@/css/tableView.css">
     <AnchorPane maxWidth="300.0" minHeight="0.0" minWidth="300.0" prefHeight="700.0" prefWidth="300.0">
         <TableView fx:id="contactTable" prefHeight="698.0" prefWidth="323.0" AnchorPane.bottomAnchor="20.0"
-                   AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                   AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0"
+                    styleClass="table-view">
             <columns>
                 <TableColumn fx:id="firstNameColumn" minWidth="140.0" prefWidth="140.0" text="First Name"/>
                 <TableColumn fx:id="lastNameColumn" minWidth="140.0" prefWidth="140.0" text="Last Name"/>
@@ -27,7 +28,7 @@
             <graphic>
                 <ImageView fitHeight="30" fitWidth="30">
                     <image>
-                        <Image url="@/contact.png"/>
+                        <Image url="@/picture/contact.png"/>
                     </image>
                 </ImageView>
             </graphic>
