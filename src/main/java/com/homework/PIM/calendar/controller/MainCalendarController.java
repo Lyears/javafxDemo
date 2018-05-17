@@ -11,9 +11,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.AccessibleRole;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,6 +50,9 @@ public class MainCalendarController {
     public JFXButton loginAndLogoutButton;
     public JFXButton createButton;
 
+    public Label loginUserLabel;
+    public Label loginTimeLabel;
+
     public Separator separatorY;
     public AnchorPane leftPane;
 
@@ -68,13 +72,15 @@ public class MainCalendarController {
     @FXML
     private CalendarViewController calendarViewController;
     private CalendarMainApp mainApp;
+    private UserAlertBox userAlertBox = new UserAlertBox();
 
     public void initialize() {
         //设置水平分割线的模糊效果
         separatorY.setEffect(new DropShadow(5, 6, 4, Color.BLACK));
         //设置时间选择器显示星期和将初始值设为当前时间
         datePicker.setValue(LocalDate.now());
-        ObjectProperty<LocalDate> datePickerProperty = datePicker.valueProperty();
+        //datePicker不能为空
+        ObjectProperty<LocalDate> datePickerProperty = Objects.requireNonNull(datePicker.valueProperty());
         //设置日历显示时间标签的输出格式
         stringBinding = new StringBinding() {
             {
@@ -87,16 +93,16 @@ public class MainCalendarController {
             }
         };
         isLogin.addListener(
-                (observe, oldValue, newValue)->{
+                (observe, oldValue, newValue) -> {
                     ImageView imageView = new ImageView();
                     imageView.setFitWidth(40);
                     imageView.setFitHeight(40);
-                    if (newValue.equals(true)){
+                    if (newValue.equals(true)) {
                         loginAndLogoutButton.setText("注销");
                         imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("logout.png")));
                         loginAndLogoutButton.setGraphic(imageView);
 
-                    }else{
+                    } else {
                         loginAndLogoutButton.setText("登录");
                         imageView.setImage(new Image(getClass().getClassLoader().getResourceAsStream("login.png")));
                         loginAndLogoutButton.setGraphic(imageView);
@@ -203,7 +209,6 @@ public class MainCalendarController {
         }
     }
 
-
     public void newTodoClick(ActionEvent event) throws Exception {
         ChangeAlertBox alertBox = new ChangeAlertBox();
         alertBox.display("新建项目", PIMTodo.class);
@@ -263,19 +268,21 @@ public class MainCalendarController {
     public void editButtonClick(ActionEvent event) {
 
         WrapEntity selectedEntity = mainApp.getSelectedItem();
-        if (contactViewController != null) {
-            WrapContact selectedContact = contactViewController.contactTable.getSelectionModel().getSelectedItem();
-            edit(selectedContact, contactViewController);
-        } else if (noteViewController != null) {
-            WrapNote selectedNote = noteViewController.noteTable.getSelectionModel().getSelectedItem();
-            edit(selectedNote, noteViewController);
-        } else {
-            if (selectedEntity instanceof WrapTodo) {
-                WrapTodo wrapTodo = (WrapTodo) selectedEntity;
-                edit(wrapTodo, mainApp.getTodos());
-            } else if (selectedEntity instanceof WrapAppointment) {
-                WrapAppointment wrapAppointment = (WrapAppointment) selectedEntity;
-                edit(wrapAppointment, mainApp.getAppointments());
+        if (selectedEntity != null) {
+            if (contactViewController != null) {
+                WrapContact selectedContact = contactViewController.contactTable.getSelectionModel().getSelectedItem();
+                edit(selectedContact, contactViewController);
+            } else if (noteViewController != null) {
+                WrapNote selectedNote = noteViewController.noteTable.getSelectionModel().getSelectedItem();
+                edit(selectedNote, noteViewController);
+            } else {
+                if (selectedEntity instanceof WrapTodo) {
+                    WrapTodo wrapTodo = (WrapTodo) selectedEntity;
+                    edit(wrapTodo, mainApp.getTodos());
+                } else if (selectedEntity instanceof WrapAppointment) {
+                    WrapAppointment wrapAppointment = (WrapAppointment) selectedEntity;
+                    edit(wrapAppointment, mainApp.getAppointments());
+                }
             }
         }
     }
@@ -354,17 +361,19 @@ public class MainCalendarController {
 
     public void deleteButtonClick(ActionEvent event) {
         WrapEntity selectedEntity = mainApp.getSelectedItem();
-        if (noteViewController != null) {
-            delete(noteViewController);
-        } else if (contactViewController != null) {
-            delete(contactViewController);
-        } else {
-            if (selectedEntity instanceof WrapTodo) {
-                WrapTodo selectedTodo = (WrapTodo) selectedEntity;
-                delete(selectedTodo, mainApp.getTodos());
-            } else if (selectedEntity instanceof WrapAppointment) {
-                WrapAppointment selectedAppointment = (WrapAppointment) selectedEntity;
-                delete(selectedAppointment, mainApp.getAppointments());
+        if (selectedEntity != null) {
+            if (noteViewController != null) {
+                delete(noteViewController);
+            } else if (contactViewController != null) {
+                delete(contactViewController);
+            } else {
+                if (selectedEntity instanceof WrapTodo) {
+                    WrapTodo selectedTodo = (WrapTodo) selectedEntity;
+                    delete(selectedTodo, mainApp.getTodos());
+                } else if (selectedEntity instanceof WrapAppointment) {
+                    WrapAppointment selectedAppointment = (WrapAppointment) selectedEntity;
+                    delete(selectedAppointment, mainApp.getAppointments());
+                }
             }
         }
 
@@ -388,9 +397,12 @@ public class MainCalendarController {
         noteViewController.noteTable.getItems().remove(selectedIndex);
     }
 
-    private UserAlertBox userAlertBox = new UserAlertBox();
-    public void loginAndLogOutButtonClick(ActionEvent event){
+    public void loginAndLogOutButtonClick(ActionEvent event) {
         userAlertBox.loginAndLogout();
+    }
+
+    public void createUserButtonClick(ActionEvent event) {
+        userAlertBox.createUser();
     }
 
 
@@ -447,15 +459,15 @@ public class MainCalendarController {
 
             JFXButton closeButton = new JFXButton("关闭");
             closeButton.getStyleClass().add("button-raised");
-            closeButton.setPrefSize(45d,30d);
-            closeButton.setMaxSize(45d,30d);
-            closeButton.setMinSize(45d,30d);
+            closeButton.setPrefSize(45d, 30d);
+            closeButton.setMaxSize(45d, 30d);
+            closeButton.setMinSize(45d, 30d);
             closeButton.setCancelButton(true);
             JFXButton submitButton = new JFXButton("提交");
             submitButton.getStyleClass().add("button-raised");
-            submitButton.setPrefSize(45d,30d);
-            submitButton.setMaxSize(45d,30d);
-            submitButton.setMinSize(45d,30d);
+            submitButton.setPrefSize(45d, 30d);
+            submitButton.setMaxSize(45d, 30d);
+            submitButton.setMinSize(45d, 30d);
             submitButton.setDefaultButton(true);
 
             closeButton.setOnAction(event -> window.close());
@@ -490,7 +502,6 @@ public class MainCalendarController {
 
             vBox.setAlignment(Pos.CENTER);
 
-
             JFXTextField[] textFields = new JFXTextField[clazz.getDeclaredFields().length];
 
             Class realClazz = null;
@@ -501,8 +512,10 @@ public class MainCalendarController {
             int i = 0;
             for (Field text : clazz.getDeclaredFields()) {
                 Label label = new Label(text.getName() + ": ");
+                label.getStyleClass().add("fx-label");
                 textFields[i] = new JFXTextField();
-                textFields[i].setFocusColor(Color.valueOf("#0099ff"));
+                //设置textFiled的主题颜色
+                textFields[i].getStyleClass().add("jfx-text-field");
                 //如果传入的对象不为空，将文本框内的值预设为传入的对象对应的值
                 if (o != null) {
                     realText = realClazz.getDeclaredFields()[i];
@@ -541,22 +554,55 @@ public class MainCalendarController {
 
     }
 
-    private class UserAlertBox{
+    private class UserAlertBox {
+        private boolean okClick = false;
 
-        private void loginAndLogout(){
-            if (isLogin.get()){
+        private void loginAndLogout() {
+            if (isLogin.get()) {
+                //
                 isLogin.set(false);
-            }else {
+            } else {
                 if (login()) {
                     isLogin.set(true);
                 }
             }
         }
 
-        private boolean login(){
+        private void createUser() {
+            create();
+        }
+
+        private boolean login() {
             boolean validation = false;
             Stage window = new Stage();
             window.setTitle("登录");
+            User user = new User();
+            final boolean isCreate = false;
+            display(window, user,isCreate);
+            if (okClick){
+                validation = true;
+                window.close();
+            }
+            window.showAndWait();
+            return validation;
+        }
+
+        private void create() {
+            Stage window = new Stage();
+            window.setTitle("注册");
+            User user = new User();
+            final boolean isCreate = true;
+            okClick = false;
+            display(window, user, isCreate);
+            if (okClick){
+                mainApp.setUserInfo(user);
+                window.close();
+            }
+            window.showAndWait();
+        }
+
+        private void display(Stage window, User user, boolean isCreate) {
+
             window.initModality(Modality.APPLICATION_MODAL);
             window.setMinHeight(300);
             window.setMaxHeight(300);
@@ -565,15 +611,15 @@ public class MainCalendarController {
 
             JFXButton closeButton = new JFXButton("关闭");
             closeButton.getStyleClass().add("button-raised");
-            closeButton.setPrefSize(45d,30d);
-            closeButton.setMaxSize(45d,30d);
-            closeButton.setMinSize(45d,30d);
+            closeButton.setPrefSize(45d, 30d);
+            closeButton.setMaxSize(45d, 30d);
+            closeButton.setMinSize(45d, 30d);
             closeButton.setCancelButton(true);
             JFXButton submitButton = new JFXButton("提交");
             submitButton.getStyleClass().add("button-raised");
-            submitButton.setPrefSize(45d,30d);
-            submitButton.setMaxSize(45d,30d);
-            submitButton.setMinSize(45d,30d);
+            submitButton.setPrefSize(45d, 30d);
+            submitButton.setMaxSize(45d, 30d);
+            submitButton.setMinSize(45d, 30d);
             submitButton.setDefaultButton(true);
 
 
@@ -583,26 +629,28 @@ public class MainCalendarController {
             vBox.getStylesheets().add(Objects.requireNonNull(getClass().getClassLoader().getResource("css/style.css")).toExternalForm());
 
             Label userLabel = new Label("用户名: ");
-            JFXTextField userName = new JFXTextField();
-            userName.setFocusColor(Color.valueOf("#0099ff"));
+            userLabel.getStyleClass().add("fx-label");
+            JFXTextField userNameField = new JFXTextField();
+            userNameField.setFocusColor(Color.valueOf("#0099ff"));
 
-            userName.setPromptText("请输入用户名");
+            userNameField.setPromptText("请输入用户名");
             AnchorPane anchorPane = new AnchorPane();
-            anchorPane.getChildren().addAll(userLabel,userName);
+            anchorPane.getChildren().addAll(userLabel, userNameField);
             AnchorPane.setLeftAnchor(userLabel, 100d);
-            AnchorPane.setRightAnchor(userName, 100d);
+            AnchorPane.setRightAnchor(userNameField, 100d);
             vBox.getChildren().add(anchorPane);
 
             Label passwordLabel = new Label("密码: ");
-            JFXPasswordField password = new JFXPasswordField();
-            password.setFocusColor(Color.valueOf("#0099ff"));
+            passwordLabel.getStyleClass().add("fx-label");
+            JFXPasswordField passwordField = new JFXPasswordField();
+            passwordField.setFocusColor(Color.valueOf("#0099ff"));
 
 
-            password.setPromptText("请输入密码");
+            passwordField.setPromptText("请输入密码");
             anchorPane = new AnchorPane();
-            anchorPane.getChildren().addAll(passwordLabel,password);
-            AnchorPane.setLeftAnchor(passwordLabel,100d);
-            AnchorPane.setRightAnchor(password,100d);
+            anchorPane.getChildren().addAll(passwordLabel, passwordField);
+            AnchorPane.setLeftAnchor(passwordLabel, 100d);
+            AnchorPane.setRightAnchor(passwordField, 100d);
             vBox.getChildren().add(anchorPane);
 
 
@@ -614,17 +662,30 @@ public class MainCalendarController {
             closeButton.setOnAction(event -> window.close());
             submitButton.setOnAction(
                     event -> {
+                        User existUser = mainApp.getUserInfo(userNameField.getText());
 
+                        if (isCreate) {
+                            if (existUser == null) {
+                                user.setUserName(userNameField.getText());
+                                user.setPassword(passwordField.getText());
+                                okClick = true;
+                            } else {
+                                // TODO: 2018/5/16  fail to create
+                            }
+                        } else {
+                            if (existUser != null) {
+                                if (existUser.getPassword().equals(passwordField.getText())){
+                                    okClick = true;
+                                }
+                            }
+                        }
                     }
             );
             Scene scene = new Scene(vBox);
             window.setScene(scene);
-            window.showAndWait();
 
-            return false;
         }
     }
-
 
 
 }

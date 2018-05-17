@@ -58,4 +58,5 @@ public class ItemsListWrapper {
     public void setNotes(List<WrapNote> notes) {
         this.notes = notes;
     }
+
 }

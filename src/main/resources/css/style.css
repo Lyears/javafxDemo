@@ -11,7 +11,7 @@
     -jfx-toggle-color: #0099ff;
     -jfx-untoggle-color: #FAFAFA;
     -jfx-toggle-line-color: #84c1ff;
-    -jfx-untoggle-line-color: #999999;
+    -jfx-untoggle-line-color: #BEBEBE;
 }
 
 .jfx-toggle-button Line {
@@ -37,7 +37,9 @@
     -jfx-rippler-fill: -jfx-toggle-line-color;
 }
 
-
+/**
+    button
+ */
 .button-raised{
     /*-fx-padding: 0.7em 0.57em;*/
     -fx-font-size: 12px;
@@ -46,5 +48,38 @@
 
     -fx-background-color: #84c1ff;
     -fx-text-fill: #0099ff;
+}
+
+.fx-label{
+    -fx-padding: 0.333333em 0 0.333333em 0;
+}
+
+
+/**
+    text-field
+ */
+.jfx-text-field {
+    -jfx-focus-color: #0099ff;
+    -jfx-unfocus-color: #4d4d4d;
+    -fx-padding: 0.333333em 0 0.333333em 0;
+}
+
+.jfx-text-field,
+.jfx-text-field:focused {
+    -fx-background-color: TRANSPARENT, TRANSPARENT, TRANSPARENT;
+    -fx-prompt-text-fill: #bebebe;
+}
+
+.jfx-text-field:error {
+    -jfx-focus-color: #D34336;
+    -jfx-unfocus-color: #D34336;
+}
+
+.jfx-text-field .error-label {
+    -fx-text-fill: #D34336;
+}
+
+.jfx-text-field .error-icon {
+    -fx-fill: #D34336;
 }
 

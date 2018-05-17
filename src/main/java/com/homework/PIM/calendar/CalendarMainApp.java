@@ -144,6 +144,22 @@ public class CalendarMainApp extends Application {
         }
     }
 
+    public User getUserInfo(String name){
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        String password = prefs.get(name,null);
+        if (password != null){
+            return new User(name,password);
+        }else {
+            return null;
+        }
+    }
+
+    public void setUserInfo(User userInfo){
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        Objects.requireNonNull(userInfo);
+        prefs.put(userInfo.getUserName(),userInfo.getPassword());
+    }
+
     /**
      * 加载持久化文件
      *
