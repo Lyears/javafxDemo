@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <AnchorPane minHeight="670.0" minWidth="1100.0" prefHeight="670.0" prefWidth="1100.0" BorderPane.alignment="CENTER"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.homework.PIM.calendar.controller.CalendarViewController">
     <children>
-        <AnchorPane prefHeight="125.0" prefWidth="1100.0" AnchorPane.bottomAnchor="545.0">
+        <AnchorPane prefHeight="125.0" prefWidth="1100.0" AnchorPane.bottomAnchor="545.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Label alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="90.0" prefWidth="150.0"
-                       text="星期日" textAlignment="CENTER" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="25.0">
+                       text="星期日" textAlignment="CENTER" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="25.0"
+                       AnchorPane.topAnchor="91.0">
                     <font>
                         <Font size="14.0"/>
                     </font>
                 </Label>
                 <Label alignment="CENTER" layoutX="155.0" layoutY="90.0" prefWidth="150.0" text="星期一"
-                       AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="175.0">
+                       AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="175.0" AnchorPane.topAnchor="91.0">
                     <font>
                         <Font size="14.0"/>
                     </font>
                 </Label>
                 <Label alignment="CENTER" layoutX="166.0" layoutY="104.0" prefWidth="150.0" text="星期二"
-                       AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="325.0">
+                       AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="325.0" AnchorPane.topAnchor="91.0">
                     <font>
                         <Font size="14.0"/>
                     </font>
                 </Label>
                 <Label alignment="CENTER" contentDisplay="CENTER" layoutX="176.0" layoutY="114.0" text="星期三"
-                       AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="475.0" AnchorPane.rightAnchor="475.0">
+                       AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="475.0" AnchorPane.rightAnchor="475.0"
+                       AnchorPane.topAnchor="91.0">
                     <font>
                         <Font size="14.0"/>
                     </font>
                 </Label>
                 <Label alignment="CENTER" layoutX="186.0" layoutY="124.0" prefWidth="150.0" text="星期四"
-                       AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="325.0">
+                       AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="325.0" AnchorPane.topAnchor="91.0">
                     <font>
                         <Font size="14.0"/>
                     </font>
                 </Label>
                 <Label alignment="CENTER" layoutX="196.0" layoutY="134.0" prefWidth="150.0" text="星期五"
-                       AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="175.0">
+                       AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="91.0">
                     <font>
                         <Font size="14.0"/>
                     </font>
                 </Label>
                 <Label alignment="CENTER" layoutX="206.0" layoutY="144.0" prefWidth="150.0" text="星期六"
-                       AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="25.0">
+                       AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="91.0">
                     <font>
                         <Font size="14.0"/>
                     </font>
@@ -72,7 +74,9 @@
                     </font>
                     <graphic>
                         <ImageView fitHeight="24" fitWidth="24">
-                            <Image url="@/picture/calendar.png"/>
+                            <image>
+                                <Image url="@/picture/calendar.png"/>
+                            </image>
                         </ImageView>
                     </graphic>
                 </Label>

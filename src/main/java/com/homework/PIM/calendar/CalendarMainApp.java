@@ -3,6 +3,9 @@ package com.homework.PIM.calendar;
 import com.homework.PIM.calendar.controller.MainCalendarController;
 import com.homework.PIM.calendar.controller.RootLayoutController;
 import com.homework.PIM.calendar.warpper.*;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXSpinner;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -11,8 +14,15 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -92,17 +102,17 @@ public class CalendarMainApp extends Application {
         Scene scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
         primaryStage.show();
-        
+
         //为loginUser添加监视器
         loginUser.addListener(
                 (observable, oldValue, newValue) -> {
-                    if (newValue == null){
+                    if (newValue == null) {
                         contacts.clear();
                         todos.clear();
                         appointments.clear();
                         notes.clear();
-                    }else{
-                        //首先打开加载在注册表中的配置
+                    } else {
+                        //打开加载在注册表中的配置
                         File file = getPersonFilePath();
                         if (file != null) {
                             try {
@@ -119,7 +129,6 @@ public class CalendarMainApp extends Application {
 
     private void initCalendar() throws Exception {
 
-        // TODO: 2018/4/10 重构持久化加载方式
         //加载主视图
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/MainCalendar.fxml"));
         this.calendarMainView = loader.load();
@@ -140,42 +149,55 @@ public class CalendarMainApp extends Application {
     }
 
     public File getPersonFilePath() {
-        Preferences prefs = Preferences.userNodeForPackage(getClass());
-        String filePath = prefs.get("filePath", null);
-        if (filePath != null) {
-            return new File(filePath);
-        } else {
+        if (loginUser.get() == null){
             return null;
+        }else {
+            Preferences prefs = Preferences.userNodeForPackage(getClass());
+            String filePath = new JSONObject(prefs.get(loginUser.get().getUserName(), null)).getString("filePath");
+            if (filePath != null) {
+                return new File(filePath);
+            } else {
+                return null;
+            }
         }
     }
 
     public void setPersonFilePath(File file) {
         Preferences prefs = Preferences.userNodeForPackage(getClass());
         if (file != null) {
-            prefs.put("filePath", file.getPath());
+            loginUser.get().setFilePath(file.getPath());
+            JSONObject userObject = new JSONObject(loginUser.get());
+            prefs.put(loginUser.get().getUserName(), userObject.toString());
 
             // 更新标题
-            primaryStage.setTitle("日历-个人管理系统 - " + file.getName());
+            primaryStage.setTitle("日历-个人管理系统 - "+loginUser.get().getUserName()+ " - " + file.getName());
         } else {
             prefs.remove("filePath");
             primaryStage.setTitle("日历-个人管理系统");
         }
     }
 
-    public User getUserInfo(String name){
+    public User getUserInfo(String name) {
         Preferences prefs = Preferences.userNodeForPackage(getClass());
-        String password = prefs.get(name,null);
-        if (password != null){
-            return new User(name,password);
+        String userJSON = prefs.get(name,null);
+        if (userJSON != null) {
+            JSONObject userObject = new JSONObject(prefs.get(name, null));
+            String password = userObject.getString("password");
+            if (password != null) {
+                return new User(name, password);
+            } else {
+                return null;
+            }
         }else {
             return null;
         }
     }
 
-    public void setUserInfo(User userInfo){
+    public void setUserInfo(User userInfo) {
         Preferences prefs = Preferences.userNodeForPackage(getClass());
         Objects.requireNonNull(userInfo);
-        prefs.put(userInfo.getUserName(),userInfo.getPassword());
+        JSONObject userObject = new JSONObject(userInfo);
+        prefs.put(userInfo.getUserName(), userObject.toString());
     }
 
     /**
@@ -221,37 +243,57 @@ public class CalendarMainApp extends Application {
      * @param file 选择文件
      */
     public void savePersonDataToFile(File file) {
-        try {
-            JAXBContext context = JAXBContext
-                    .newInstance(ItemsListWrapper.class);
-            Marshaller m = context.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        if (loginUser.get() == null){
+            waringDialog();
+        }else {
+            try {
+                JAXBContext context = JAXBContext
+                        .newInstance(ItemsListWrapper.class);
+                Marshaller m = context.createMarshaller();
+                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            //加载包装集合，用于写入数据
-            loadWrapEntities();
+                //加载包装集合，用于写入数据
+                loadWrapEntities();
 
-            ItemsListWrapper wrapper = new ItemsListWrapper();
-            wrapper.setAppointments(wrapAppointments);
-            wrapper.setContacts(wrapContacts);
-            wrapper.setTodos(wrapTodos);
-            wrapper.setNotes(wrapNotes);
+                ItemsListWrapper wrapper = new ItemsListWrapper();
+                wrapper.setAppointments(wrapAppointments);
+                wrapper.setContacts(wrapContacts);
+                wrapper.setTodos(wrapTodos);
+                wrapper.setNotes(wrapNotes);
 
-            //在保存文件之前先清空数据
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write("");
-            fileWriter.flush();
-            fileWriter.close();
+                //在保存文件之前先清空数据
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write("");
+                fileWriter.flush();
+                fileWriter.close();
 
-            // 将对象编为xml文件
-            m.marshal(wrapper, file);
+                // 将对象编为xml文件
+                m.marshal(wrapper, file);
 
-            // 保存文件配置进入注册表
-            setPersonFilePath(file);
-        } catch (Exception e) {
-            e.printStackTrace();
+                // 保存文件配置进入注册表
+                setPersonFilePath(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    private void waringDialog(){
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        StackPane paneDialog = new StackPane();
+
+        JFXDialog dialog = new JFXDialog();
+        dialog.setDialogContainer(paneDialog);
+        dialog.setOverlayClose(false);
+        dialog.setContent(new Label("您还没有登录，请先登录！"));
+
+        final Scene scene = new Scene(paneDialog, 200, 50);
+        stage.setScene(scene);
+        stage.setTitle("警告");
+        dialog.show();
+        stage.show();
+    }
 
     public BorderPane getCalendarMainView() {
         return calendarMainView;
