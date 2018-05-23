@@ -73,6 +73,9 @@
                                     </image>
                                 </ImageView>
                             </graphic>
+                     <font>
+                        <Font name="Monaco" size="13.0" />
+                     </font>
                         </JFXButton>
                         <JFXButton fx:id="newNote" buttonType="RAISED" contentDisplay="TOP" layoutX="105.0" layoutY="10.0" mnemonicParsing="false" onAction="#newNoteClick" prefHeight="120.0" prefWidth="85.0" text="新建笔记">
                             <graphic>
@@ -82,6 +85,9 @@
                                     </image>
                                 </ImageView>
                             </graphic>
+                     <font>
+                        <Font name="Monaco" size="13.0" />
+                     </font>
                         </JFXButton>
                         <JFXButton fx:id="newTodo" alignment="CENTER" buttonType="RAISED" contentDisplay="TOP" layoutX="200.0" layoutY="10.0" mnemonicParsing="false" onAction="#newTodoClick" prefHeight="120.0" prefWidth="85.0" textOverrun="WORD_ELLIPSIS">
                             <graphic>
@@ -200,16 +206,16 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-            <Label layoutX="1222.0" layoutY="39.0" text="当前登录用户: " fx:id="loginUserLabel">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="1222.0" layoutY="77.0" text="本次登录时间: " fx:id="loginTimeLabel">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
+                <Label fx:id="loginUserLabel" layoutX="1222.0" layoutY="39.0" text="当前登录用户: ">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label fx:id="loginTimeLabel" layoutX="1222.0" layoutY="77.0" text="本次登录时间: ">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
             </children>
         </AnchorPane>
     </top>

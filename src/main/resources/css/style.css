@@ -83,3 +83,28 @@
     -fx-fill: #D34336;
 }
 
+.jfx-password-field {
+    -jfx-focus-color: #0099ff;
+    -jfx-unfocus-color: #4d4d4d;
+    -fx-padding: 0.333333em 0 0.333333em 0;
+}
+
+.jfx-password-field,
+.jfx-password-field:focused {
+    -fx-prompt-text-fill: #bebebe;
+    -fx-background-color: TRANSPARENT, TRANSPARENT, TRANSPARENT;
+}
+
+.jfx-password-field:error {
+    -jfx-focus-color: #D34336;
+    -jfx-unfocus-color: #D34336;
+}
+
+.jfx-password-field .error-label {
+    -fx-text-fill: #D34336;
+}
+
+.jfx-password-field .error-icon {
+    -fx-fill: #D34336;
+}
+

@@ -24,7 +24,7 @@
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="800.0">
         <Label layoutX="36.0" layoutY="26.0" text="笔记" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="20.0">
             <font>
-                <Font name="LiHei Pro" size="28.0" />
+                <Font name="Microsoft Sans Serif" size="28.0" />
             </font>
             <graphic>
                 <ImageView fitHeight="30" fitWidth="30">
