@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
@@ -96,6 +97,7 @@ public class CalendarMainApp extends Application {
         rootLayoutController.setMainApp(this);
         Scene scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("picture/note.png")));
         primaryStage.show();
 
         //为loginUser添加监视器
@@ -213,11 +215,19 @@ public class CalendarMainApp extends Application {
         if (userJSON != null) {
             JSONObject userObject = new JSONObject(prefs.get(name, null));
             String password = userObject.getString("password");
-            String filePath = userObject.getString("filePath");
-            if (password != null) {
-                return new User(name, password, filePath);
+            if (!userObject.isNull("filePath")) {
+                String filePath = userObject.getString("filePath");
+                if (password != null) {
+                    return new User(name, password, filePath);
+                } else {
+                    return null;
+                }
             } else {
-                return null;
+                if (password != null) {
+                    return new User(name, password);
+                } else {
+                    return null;
+                }
             }
         } else {
             return null;

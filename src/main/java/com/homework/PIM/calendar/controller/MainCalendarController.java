@@ -25,6 +25,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -451,7 +452,7 @@ public class MainCalendarController {
 
             Stage window = new Stage();
             window.setTitle(title);
-            window.initModality(Modality.APPLICATION_MODAL);
+
             window.setMinHeight(300);
             window.setMaxHeight(300);
             window.setMinWidth(450);
